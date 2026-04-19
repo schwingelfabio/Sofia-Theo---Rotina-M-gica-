@@ -4,6 +4,7 @@ import { useGame } from '../state/GameContext';
 import { ROUTINES, RoutineTask } from '../data/routines';
 import { Star, Heart, UserCircle2 } from 'lucide-react';
 import { playStarTap, playSuccess, playClick } from '../lib/audio';
+import { Avatar } from '../components/Avatar';
 
 interface MiniGameScreenProps {
   taskId: string;
@@ -75,9 +76,9 @@ export const MiniGameScreen: React.FC<MiniGameScreenProps> = ({ taskId, onComple
                <motion.div 
                  animate={isWiggling ? { rotate: [-10, 10, -10, 0], scale: [1, 1.1, 1] } : {}}
                  transition={{ duration: 0.3 }}
-                 className={`w-20 h-20 sm:w-24 sm:h-24 rounded-full border-4 shadow-md flex items-center justify-center ${characterColors[activeCharacter]}`}
+                 className="flex items-center justify-center pt-4"
                >
-                 <UserCircle2 size={48} />
+                 <Avatar character={activeCharacter} size={84} />
                </motion.div>
 
                <motion.button

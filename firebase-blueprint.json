@@ -20,9 +20,28 @@
         "completedRoutines": { "type": "array", "items": { "type": "string" } },
         "language": { "type": "string", "enum": ["pt", "en"] },
         "activeCharacter": { "type": "string", "enum": ["sofia", "theo"] },
+        "customization": {
+          "type": "object",
+          "properties": {
+            "sofia": {
+              "type": "object",
+              "properties": {
+                "outfit": { "type": "string" },
+                "accessory": { "type": "string" }
+              }
+            },
+            "theo": {
+              "type": "object",
+              "properties": {
+                "outfit": { "type": "string" },
+                "accessory": { "type": "string" }
+              }
+            }
+          }
+        },
         "updatedAt": { "type": "number", "description": "Timestamp" }
       },
-      "required": ["hearts", "completedRoutines", "language", "activeCharacter", "updatedAt"]
+      "required": ["hearts", "completedRoutines", "language", "activeCharacter", "customization", "updatedAt"]
     }
   },
   "firestore": {

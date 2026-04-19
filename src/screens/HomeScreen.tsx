@@ -1,8 +1,9 @@
 import React from 'react';
 import { motion } from 'motion/react';
-import { Home, School, Trees, Star, Heart, Crown, UserCircle2 } from 'lucide-react';
+import { Home, School, Trees, Star, Heart, Crown, Shirt } from 'lucide-react';
 import { useGame } from '../state/GameContext';
 import { playClick } from '../lib/audio';
+import { Avatar } from '../components/Avatar';
 
 interface WorldCardProps {
   title: string;
@@ -37,7 +38,7 @@ const WorldCard: React.FC<WorldCardProps> = ({ title, subtitle, icon, color, onC
   );
 };
 
-export const HomeScreen: React.FC<{ onSelectWorld: (worldId: string) => void }> = ({ onSelectWorld }) => {
+export const HomeScreen: React.FC<{ onSelectWorld: (worldId: string) => void, onOpenWardrobe: () => void }> = ({ onSelectWorld, onOpenWardrobe }) => {
   const { language, activeCharacter, setActiveCharacter } = useGame();
   
   const isPt = language === 'pt';
@@ -75,26 +76,32 @@ export const HomeScreen: React.FC<{ onSelectWorld: (worldId: string) => void }> 
 
   return (
     <div className="p-6 md:p-8">
-      {/* CHARACTER SELECTOR */}
-      <div className="flex justify-center gap-6 mb-8">
-        <button 
-          onClick={() => handleCharacterSelect('sofia')}
-          className={`relative group flex flex-col items-center transition-transform ${activeCharacter === 'sofia' ? 'scale-110' : 'scale-90 opacity-70 hover:scale-100 hover:opacity-100'}`}
-        >
-          <div className={`w-20 h-20 sm:w-24 sm:h-24 rounded-full border-4 shadow-xl flex items-center justify-center bg-gradient-to-br from-pink-100 to-pink-200 overflow-hidden ${activeCharacter === 'sofia' ? 'border-[#FF69B4] shadow-[#FF69B4]/30' : 'border-white'}`}>
-             <UserCircle2 size={48} className="text-[#FF69B4]" />
-          </div>
-          <span className={`mt-2 font-black tracking-widest uppercase text-sm ${activeCharacter === 'sofia' ? 'text-[#FF69B4]' : 'text-slate-400'}`}>Sofia</span>
-        </button>
+      {/* CHARACTER SELECTOR & WARDROBE BUTTON */}
+      <div className="flex flex-col sm:flex-row items-center justify-center gap-8 mb-12 relative">
+        <div className="flex gap-6">
+          <button 
+            onClick={() => handleCharacterSelect('sofia')}
+            className={`relative group flex flex-col items-center transition-transform ${activeCharacter === 'sofia' ? 'scale-110' : 'scale-90 opacity-70 hover:scale-100 hover:opacity-100'}`}
+          >
+            <Avatar character="sofia" size={96} className={`transition-all ${activeCharacter === 'sofia' ? 'shadow-xl shadow-[#FF69B4]/30' : 'grayscale-[50%]'}`} />
+            <span className={`mt-2 font-black tracking-widest uppercase text-sm ${activeCharacter === 'sofia' ? 'text-[#FF69B4]' : 'text-slate-400'}`}>Sofia</span>
+          </button>
+
+          <button 
+            onClick={() => handleCharacterSelect('theo')}
+            className={`relative group flex flex-col items-center transition-transform ${activeCharacter === 'theo' ? 'scale-110' : 'scale-90 opacity-70 hover:scale-100 hover:opacity-100'}`}
+          >
+            <Avatar character="theo" size={96} className={`transition-all ${activeCharacter === 'theo' ? 'shadow-xl shadow-[#008080]/30' : 'grayscale-[50%]'}`} />
+            <span className={`mt-2 font-black tracking-widest uppercase text-sm ${activeCharacter === 'theo' ? 'text-[#008080]' : 'text-slate-400'}`}>Theo</span>
+          </button>
+        </div>
 
         <button 
-          onClick={() => handleCharacterSelect('theo')}
-          className={`relative group flex flex-col items-center transition-transform ${activeCharacter === 'theo' ? 'scale-110' : 'scale-90 opacity-70 hover:scale-100 hover:opacity-100'}`}
+          onClick={onOpenWardrobe}
+          className="sm:absolute sm:right-0 bg-white dark:bg-slate-800 text-[#9370DB] p-4 rounded-[24px] shadow-lg border-2 border-[#9370DB]/20 hover:scale-105 hover:bg-[#F3F0FF] dark:hover:bg-slate-700 transition-all flex items-center gap-2"
         >
-          <div className={`w-20 h-20 sm:w-24 sm:h-24 rounded-full border-4 shadow-xl flex items-center justify-center bg-gradient-to-br from-teal-100 to-teal-200 overflow-hidden ${activeCharacter === 'theo' ? 'border-[#008080] shadow-[#008080]/30' : 'border-white'}`}>
-            <UserCircle2 size={48} className="text-[#008080]" />
-          </div>
-          <span className={`mt-2 font-black tracking-widest uppercase text-sm ${activeCharacter === 'theo' ? 'text-[#008080]' : 'text-slate-400'}`}>Theo</span>
+          <Shirt size={24} />
+          <span className="font-bold text-sm uppercase tracking-wider hidden md:block">{isPt ? 'Mudar Roupa' : 'Outfit'}</span>
         </button>
       </div>
 

@@ -8,11 +8,12 @@ import { WorldScreen } from './screens/WorldScreen';
 import { MiniGameScreen } from './screens/MiniGameScreen';
 import { ParentalDashboard } from './screens/ParentalDashboard';
 import { BreathingSOSModal } from './components/BreathingSOSModal';
+import { WardrobeScreen } from './screens/WardrobeScreen';
 import { playClick } from './lib/audio';
 
 function AppContent() {
   const { hearts, isDarkMode, toggleDarkMode, language, toggleLanguage } = useGame();
-  const [currentScreen, setCurrentScreen] = useState<'home' | 'world' | 'parental'>('home');
+  const [currentScreen, setCurrentScreen] = useState<'home' | 'world' | 'parental' | 'wardrobe'>('home');
   const [selectedWorld, setSelectedWorld] = useState<string | null>(null);
   const [activeMiniGame, setActiveMiniGame] = useState<string | null>(null);
   const [sosOpen, setSosOpen] = useState(false);
@@ -44,6 +45,11 @@ function AppContent() {
   const handleOpenParental = () => {
     playClick();
     setCurrentScreen('parental');
+  };
+
+  const handleOpenWardrobe = () => {
+    playClick();
+    setCurrentScreen('wardrobe');
   };
 
   const handleOpenSOS = () => {
@@ -116,7 +122,7 @@ function AppContent() {
             transition={{ duration: 0.3 }}
           >
             {currentScreen === 'home' && (
-              <HomeScreen onSelectWorld={handleSelectWorld} />
+              <HomeScreen onSelectWorld={handleSelectWorld} onOpenWardrobe={handleOpenWardrobe} />
             )}
             
             {currentScreen === 'world' && selectedWorld && (
@@ -129,6 +135,10 @@ function AppContent() {
 
             {currentScreen === 'parental' && (
               <ParentalDashboard onBack={handleBackToHome} />
+            )}
+
+            {currentScreen === 'wardrobe' && (
+              <WardrobeScreen onBack={handleBackToHome} />
             )}
           </motion.div>
         </AnimatePresence>

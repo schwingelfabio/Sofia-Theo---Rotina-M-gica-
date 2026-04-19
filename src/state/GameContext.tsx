@@ -3,6 +3,11 @@ import { useAuth } from './AuthContext';
 import { db } from '../lib/firebase';
 import { doc, getDoc, setDoc, updateDoc, serverTimestamp } from 'firebase/firestore';
 
+interface CharacterCustomization {
+  outfit: string;
+  accessory: string;
+}
+
 interface GameState {
   hearts: number;
   completedRoutines: string[];
@@ -10,13 +15,20 @@ interface GameState {
   isDarkMode: boolean;
   language: 'pt' | 'en';
   activeCharacter: 'sofia' | 'theo';
+  customization: { sofia: CharacterCustomization, theo: CharacterCustomization };
   addHearts: (amount: number) => void;
   completeRoutine: (routineId: string) => void;
   unlockItem: (itemId: string) => void;
   toggleDarkMode: () => void;
   toggleLanguage: () => void;
   setActiveCharacter: (character: 'sofia' | 'theo') => void;
+  setCustomization: (character: 'sofia' | 'theo', type: 'outfit' | 'accessory', value: string) => void;
 }
+
+const defaultCustomization = {
+  sofia: { outfit: 'casual', accessory: 'none' },
+  theo: { outfit: 'casual', accessory: 'none' }
+};
 
 const defaultState: GameState = {
   hearts: 0,
@@ -25,12 +37,14 @@ const defaultState: GameState = {
   isDarkMode: false,
   language: 'pt',
   activeCharacter: 'sofia',
+  customization: defaultCustomization,
   addHearts: () => {},
   completeRoutine: () => {},
   unlockItem: () => {},
   toggleDarkMode: () => {},
   toggleLanguage: () => {},
   setActiveCharacter: () => {},
+  setCustomization: () => {},
 };
 
 const GameContext = createContext<GameState>(defaultState);
@@ -43,6 +57,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [language, setLanguage] = useState<'pt' | 'en'>('pt');
   const [activeCharacter, setActiveCharacter] = useState<'sofia' | 'theo'>('sofia');
+  const [customization, setCustomizationState] = useState<{ sofia: CharacterCustomization, theo: CharacterCustomization }>(defaultCustomization);
   
   const [initialLoadDone, setInitialLoadDone] = useState(false);
 
@@ -62,6 +77,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
           setCompletedRoutines(data.completedRoutines || []);
           setLanguage(data.language || 'pt');
           setActiveCharacter(data.activeCharacter || 'sofia');
+          if (data.customization) setCustomizationState(data.customization);
         } else {
           // Create initial progress doc
           await setDoc(progressRef, {
@@ -69,6 +85,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
             completedRoutines: [],
             language: 'pt',
             activeCharacter: 'sofia',
+            customization: defaultCustomization,
             updatedAt: serverTimestamp()
           });
         }
@@ -84,6 +101,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
             if (parsed.isDarkMode !== undefined) setIsDarkMode(parsed.isDarkMode);
             if (parsed.language !== undefined) setLanguage(parsed.language);
             if (parsed.activeCharacter !== undefined) setActiveCharacter(parsed.activeCharacter);
+            if (parsed.customization !== undefined) setCustomizationState(parsed.customization);
           } catch (e) {
             console.error('Failed to load game state', e);
           }
@@ -113,7 +131,8 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
       unlockedItems,
       isDarkMode,
       language,
-      activeCharacter
+      activeCharacter,
+      customization
     };
 
     // Save locally always
@@ -129,6 +148,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
             completedRoutines,
             language,
             activeCharacter,
+            customization,
             updatedAt: serverTimestamp()
           });
         } catch (error) {
@@ -142,7 +162,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }, 500);
       return () => clearTimeout(timeout);
     }
-  }, [hearts, completedRoutines, unlockedItems, isDarkMode, language, activeCharacter, user, initialLoadDone]);
+  }, [hearts, completedRoutines, unlockedItems, isDarkMode, language, activeCharacter, customization, user, initialLoadDone]);
 
   const addHearts = (amount: number) => setHearts(prev => prev + amount);
   const completeRoutine = (routineId: string) => {
@@ -163,11 +183,21 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
   const toggleDarkMode = () => setIsDarkMode(prev => !prev);
   const toggleLanguage = () => setLanguage(prev => prev === 'pt' ? 'en' : 'pt');
+  
+  const setCustomization = (character: 'sofia' | 'theo', type: 'outfit' | 'accessory', value: string) => {
+    setCustomizationState(prev => ({
+      ...prev,
+      [character]: {
+        ...prev[character],
+        [type]: value
+      }
+    }));
+  };
 
   return (
     <GameContext.Provider value={{
-      hearts, completedRoutines, unlockedItems, isDarkMode, language, activeCharacter,
-      addHearts, completeRoutine, unlockItem, toggleDarkMode, toggleLanguage, setActiveCharacter
+      hearts, completedRoutines, unlockedItems, isDarkMode, language, activeCharacter, customization,
+      addHearts, completeRoutine, unlockItem, toggleDarkMode, toggleLanguage, setActiveCharacter, setCustomization
     }}>
       {children}
     </GameContext.Provider>
