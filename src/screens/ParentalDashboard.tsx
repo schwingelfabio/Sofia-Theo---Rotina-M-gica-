@@ -8,7 +8,7 @@ import { motion } from 'motion/react';
 import { playClick } from '../lib/audio';
 
 export const ParentalDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) => {
-  const { hearts, completedRoutines, language } = useGame();
+  const { hearts, completedRoutines, language, sensoryMode, toggleSensoryMode } = useGame();
   const { user, isAdmin } = useAuth();
 
   const isPt = language === 'pt';
@@ -77,6 +77,23 @@ export const ParentalDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) 
           <Settings size={36} className="text-[#008080] dark:text-[#4fd1d1] mb-3" />
           <p className="font-bold text-[#008080] dark:text-[#4fd1d1] text-sm uppercase tracking-wider">{isPt ? 'Exportar' : 'Export'}<br/>{isPt ? 'Relatório' : 'Report'}</p>
         </div>
+      </div>
+      
+      <div className="bg-[#E6F4F1] dark:bg-[#008080]/10 rounded-[32px] p-6 px-8 border-2 border-[#008080]/30 dark:border-[#008080]/20 shadow-sm mb-6">
+        <div className="flex justify-between items-center mb-2">
+          <h4 className="font-bold text-[#008080] dark:text-[#4fd1d1] text-lg">
+            {isPt ? 'Neuro-Filtro (Modo Sensorial)' : 'Neuro-Filter (Sensory Mode)'}
+          </h4>
+          <button 
+            onClick={() => { playClick(); toggleSensoryMode(); }}
+            className={`px-4 py-2 rounded-xl font-black text-xs uppercase tracking-wider transition-colors ${sensoryMode === 'normal' ? 'bg-[#FF69B4] text-white' : 'bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300'}`}
+          >
+            {isPt ? (sensoryMode === 'normal' ? 'Normal' : 'Simplificado') : (sensoryMode === 'normal' ? 'Normal' : 'Simplified')}
+          </button>
+        </div>
+        <p className="text-sm text-[#2D3748]/80 dark:text-slate-300 font-medium">
+          {isPt ? 'Ajuste a complexidade visual e sensorial do mundo.' : 'Adjust the visual and sensory complexity of the world.'}
+        </p>
       </div>
       
       <div className="bg-[#FFF5F7] dark:bg-[#FF69B4]/10 rounded-[32px] p-6 px-8 border-2 border-[#FF69B4]/30 dark:border-[#FF69B4]/20 shadow-sm mb-6">

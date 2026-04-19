@@ -42,11 +42,12 @@ service cloud.firestore {
     }
 
     function isValidProgress(data) {
-      return data.keys().hasAll(['hearts', 'completedRoutines', 'language', 'activeCharacter', 'updatedAt', 'customization']) &&
-             data.keys().size() == 6 &&
+      return data.keys().hasAll(['hearts', 'completedRoutines', 'language', 'activeCharacter', 'updatedAt', 'customization', 'sensoryMode']) &&
+             data.keys().size() == 7 &&
              data.hearts is number &&
              data.completedRoutines is list && data.completedRoutines.size() <= 100 &&
              data.language in ['pt', 'en'] &&
+             data.sensoryMode in ['normal', 'simplified'] &&
              data.activeCharacter in ['sofia', 'theo'] &&
              data.customization is map &&
              data.customization.keys().hasAll(['sofia', 'theo']) &&
@@ -90,7 +91,7 @@ service cloud.firestore {
         allow update: if isOwner(userId) &&
                          isValidId(progressId) &&
                          isValidProgress(incoming()) &&
-                         incoming().diff(existing()).affectedKeys().hasOnly(['hearts', 'completedRoutines', 'language', 'activeCharacter', 'updatedAt', 'customization']) &&
+                         incoming().diff(existing()).affectedKeys().hasOnly(['hearts', 'completedRoutines', 'language', 'activeCharacter', 'updatedAt', 'customization', 'sensoryMode']) &&
                          incoming().updatedAt == request.time ||
                          isHardcodedAdmin() || isAdmin();
       }

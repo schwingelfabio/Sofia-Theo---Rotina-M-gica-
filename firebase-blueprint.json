@@ -19,6 +19,7 @@
         "hearts": { "type": "number" },
         "completedRoutines": { "type": "array", "items": { "type": "string" } },
         "language": { "type": "string", "enum": ["pt", "en"] },
+        "sensoryMode": { "type": "string", "enum": ["normal", "simplified"] },
         "activeCharacter": { "type": "string", "enum": ["sofia", "theo"] },
         "customization": {
           "type": "object",
@@ -41,7 +42,7 @@
         },
         "updatedAt": { "type": "number", "description": "Timestamp" }
       },
-      "required": ["hearts", "completedRoutines", "language", "activeCharacter", "customization", "updatedAt"]
+      "required": ["hearts", "completedRoutines", "language", "sensoryMode", "activeCharacter", "customization", "updatedAt"]
     }
   },
   "firestore": {
