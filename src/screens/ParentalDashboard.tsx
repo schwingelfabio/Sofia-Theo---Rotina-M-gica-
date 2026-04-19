@@ -204,7 +204,12 @@ export const ParentalDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) 
           <div className="absolute top-0 right-0 -mt-10 -mr-10 w-32 h-32 bg-white/20 rounded-full blur-3xl pointer-events-none"></div>
         </motion.button>
       </div>
-      {isAdmin && <AnalyticsViewer />}
+      {isAdmin && (
+        <div className="mt-12">
+            <h2 className="text-3xl font-black text-white mb-6">Mission Control (Global)</h2>
+            <AnalyticsViewer />
+        </div>
+      )}
     </div>
   );
 };
