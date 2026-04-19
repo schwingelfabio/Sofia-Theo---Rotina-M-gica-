@@ -1,0 +1,38 @@
+{
+  "entities": {
+    "User": {
+      "title": "User Profile",
+      "description": "User profile identifying members and admins.",
+      "type": "object",
+      "properties": {
+        "email": { "type": "string" },
+        "role": { "type": "string", "enum": ["user", "admin"] },
+        "createdAt": { "type": "number", "description": "Timestamp" }
+      },
+      "required": ["email", "role", "createdAt"]
+    },
+    "GameProgress": {
+      "title": "Game Progress",
+      "description": "The child's game progress including routines and hearts.",
+      "type": "object",
+      "properties": {
+        "hearts": { "type": "number" },
+        "completedRoutines": { "type": "array", "items": { "type": "string" } },
+        "language": { "type": "string", "enum": ["pt", "en"] },
+        "activeCharacter": { "type": "string", "enum": ["sofia", "theo"] },
+        "updatedAt": { "type": "number", "description": "Timestamp" }
+      },
+      "required": ["hearts", "completedRoutines", "language", "activeCharacter", "updatedAt"]
+    }
+  },
+  "firestore": {
+    "users/{userId}": {
+      "schema": { "$ref": "#/entities/User" },
+      "description": "Public/base user profile data"
+    },
+    "users/{userId}/progress/main": {
+      "schema": { "$ref": "#/entities/GameProgress" },
+      "description": "User game progress"
+    }
+  }
+}

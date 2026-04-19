@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { GameProvider, useGame } from './state/GameContext';
+import { AuthProvider } from './state/AuthContext';
 import { Heart, Sparkles, User, Settings as SettingsIcon, Globe } from 'lucide-react';
 import { AnimatePresence, motion } from 'motion/react';
 import { HomeScreen } from './screens/HomeScreen';
@@ -144,8 +145,10 @@ function AppContent() {
 
 export default function App() {
   return (
-    <GameProvider>
-      <AppContent />
-    </GameProvider>
+    <AuthProvider>
+      <GameProvider>
+        <AppContent />
+      </GameProvider>
+    </AuthProvider>
   );
 }

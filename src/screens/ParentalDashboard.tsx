@@ -1,11 +1,14 @@
 import React from 'react';
 import { useGame } from '../state/GameContext';
+import { useAuth } from '../state/AuthContext';
+import { loginWithGoogle, logout } from '../lib/firebase';
 import { ROUTINES } from '../data/routines';
-import { ArrowLeft, LineChart, Trophy, Settings, Crown } from 'lucide-react';
+import { ArrowLeft, LineChart, Trophy, Settings, Crown, ExternalLink, LogOut, LogIn } from 'lucide-react';
 import { motion } from 'motion/react';
 
 export const ParentalDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) => {
   const { hearts, completedRoutines, language } = useGame();
+  const { user, isAdmin } = useAuth();
 
   const isPt = language === 'pt';
 
@@ -60,12 +63,52 @@ export const ParentalDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) 
         </div>
       </div>
       
-      <div className="bg-[#FFF5F7] dark:bg-[#FF69B4]/10 rounded-[32px] p-6 px-8 border-2 border-[#FF69B4]/30 dark:border-[#FF69B4]/20 shadow-sm">
-        <h4 className="font-bold text-[#FF69B4] dark:text-[#ff8fca] mb-2 text-lg">{isPt ? 'Sincronização Ativa' : 'Active Sync'}</h4>
-        <p className="text-sm text-[#2D3748]/80 dark:text-slate-300 font-medium leading-relaxed">
-          {isPt ? 'O progresso do seu filho(a) será salvo no dispositivo. Na versão final, os dados serão sincronizados com sua conta Conecta TEA para análises e personalizações.' : "Your child's progress will be saved on this device. In the final version, data will be synced with your Connect ASD account for analytics and personalization."}
-        </p>
+      <div className="bg-[#FFF5F7] dark:bg-[#FF69B4]/10 rounded-[32px] p-6 px-8 border-2 border-[#FF69B4]/30 dark:border-[#FF69B4]/20 shadow-sm mb-6">
+        <div className="flex justify-between items-start mb-4">
+          <h4 className="font-bold text-[#FF69B4] dark:text-[#ff8fca] text-lg">
+            {isPt ? 'Sincronização em Nuvem' : 'Cloud Sync'}
+          </h4>
+          {user ? (
+            <button onClick={logout} className="flex items-center gap-2 text-xs font-bold text-slate-500 hover:text-red-500 transition-colors">
+              <LogOut size={16} /> {isPt ? 'Sair' : 'Log out'}
+            </button>
+          ) : (
+            <button onClick={loginWithGoogle} className="flex items-center gap-2 text-sm font-bold bg-[#FF69B4] text-white px-4 py-2 rounded-xl shadow-md hover:bg-[#ff52a3] transition-colors">
+              <LogIn size={16} /> {isPt ? 'Fazer Login' : 'Log in'}
+            </button>
+          )}
+        </div>
+        
+        {user ? (
+          <p className="text-sm text-[#2D3748]/80 dark:text-slate-300 font-medium leading-relaxed">
+            {isPt ? `Logado como ${user.email}. O progresso está sincronizado e seguro!` : `Logged in as ${user.email}. Progress is synced and safe!`}
+            {isAdmin && <span className="block mt-2 text-[#008080] font-bold text-xs uppercase bg-[#008080]/10 px-2 py-1 rounded-lg inline-block">Modo Admin Ativado</span>}
+          </p>
+        ) : (
+          <p className="text-sm text-[#2D3748]/80 dark:text-slate-300 font-medium leading-relaxed">
+            {isPt ? 'Faça login para salvar o progresso de Sofia e Theo na nuvem de forma segura e sincronizar entre dispositivos.' : "Log in to save Sofia and Theo's progress securely to the cloud and sync across devices."}
+          </p>
+        )}
       </div>
+
+      <motion.button 
+        whileHover={{ scale: 1.02 }}
+        whileTap={{ scale: 0.98 }}
+        onClick={() => window.open('https://www.conectateaia.com.br', '_blank')}
+        className="w-full bg-[#008080] text-white rounded-[32px] p-5 shadow-lg border-4 border-white dark:border-slate-700 mb-8 flex items-center justify-between group cursor-pointer hover:bg-[#006666] transition-colors"
+      >
+        <div className="flex items-center gap-4">
+          <div className="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center text-white">
+            <ExternalLink size={24} />
+          </div>
+          <div className="text-left">
+            <h4 className="font-black text-xl tracking-tight">Conecta TEA</h4>
+            <p className="text-white/80 font-medium text-xs leading-tight">
+              {isPt ? 'Acesse o site oficial para mais recursos e suporte.' : 'Access the official website for more resources and support.'}
+            </p>
+          </div>
+        </div>
+      </motion.button>
 
       {/* NEW VIP BUTTONS FOR PARENTS */}
       <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">

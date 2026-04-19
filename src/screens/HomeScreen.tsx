@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'motion/react';
-import { Home, School, Trees, Star, Heart, Crown } from 'lucide-react';
+import { Home, School, Trees, Star, Heart, Crown, UserCircle2 } from 'lucide-react';
 import { useGame } from '../state/GameContext';
 
 interface WorldCardProps {
@@ -34,7 +34,7 @@ const WorldCard: React.FC<WorldCardProps> = ({ title, subtitle, icon, color, onC
 };
 
 export const HomeScreen: React.FC<{ onSelectWorld: (worldId: string) => void }> = ({ onSelectWorld }) => {
-  const { language } = useGame();
+  const { language, activeCharacter, setActiveCharacter } = useGame();
   
   const isPt = language === 'pt';
 
@@ -66,6 +66,29 @@ export const HomeScreen: React.FC<{ onSelectWorld: (worldId: string) => void }> 
 
   return (
     <div className="p-6 md:p-8">
+      {/* CHARACTER SELECTOR */}
+      <div className="flex justify-center gap-6 mb-8">
+        <button 
+          onClick={() => setActiveCharacter('sofia')}
+          className={`relative group flex flex-col items-center transition-transform ${activeCharacter === 'sofia' ? 'scale-110' : 'scale-90 opacity-70 hover:scale-100 hover:opacity-100'}`}
+        >
+          <div className={`w-20 h-20 sm:w-24 sm:h-24 rounded-full border-4 shadow-xl flex items-center justify-center bg-gradient-to-br from-pink-100 to-pink-200 overflow-hidden ${activeCharacter === 'sofia' ? 'border-[#FF69B4] shadow-[#FF69B4]/30' : 'border-white'}`}>
+             <UserCircle2 size={48} className="text-[#FF69B4]" />
+          </div>
+          <span className={`mt-2 font-black tracking-widest uppercase text-sm ${activeCharacter === 'sofia' ? 'text-[#FF69B4]' : 'text-slate-400'}`}>Sofia</span>
+        </button>
+
+        <button 
+          onClick={() => setActiveCharacter('theo')}
+          className={`relative group flex flex-col items-center transition-transform ${activeCharacter === 'theo' ? 'scale-110' : 'scale-90 opacity-70 hover:scale-100 hover:opacity-100'}`}
+        >
+          <div className={`w-20 h-20 sm:w-24 sm:h-24 rounded-full border-4 shadow-xl flex items-center justify-center bg-gradient-to-br from-teal-100 to-teal-200 overflow-hidden ${activeCharacter === 'theo' ? 'border-[#008080] shadow-[#008080]/30' : 'border-white'}`}>
+            <UserCircle2 size={48} className="text-[#008080]" />
+          </div>
+          <span className={`mt-2 font-black tracking-widest uppercase text-sm ${activeCharacter === 'theo' ? 'text-[#008080]' : 'text-slate-400'}`}>Theo</span>
+        </button>
+      </div>
+
       <div className="text-center mb-10">
         <motion.div
            initial={{ scale: 0 }}
