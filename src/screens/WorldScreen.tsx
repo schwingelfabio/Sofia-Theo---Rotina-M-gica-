@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { useGame } from '../state/GameContext';
 import { ROUTINES, WORLD_TITLES, WORLD_COLORS, RoutineTask } from '../data/routines';
 import { Sun, Shield, Shirt, Backpack, BookOpen, Users, Smile, Hand, Puzzle, ArrowLeft, CheckCircle2 } from 'lucide-react';
+import { playClick } from '../lib/audio';
 
 const IconMap = {
   sun: Sun,
@@ -35,6 +36,7 @@ export const WorldScreen: React.FC<WorldScreenProps> = ({ worldId, onBack, onLau
   const doneTasks = tasks.filter(t => completedRoutines.includes(t.id));
 
   const handleTaskAction = (task: RoutineTask) => {
+    playClick();
     if (!completedRoutines.includes(task.id)) {
       // Launch mini game instead of immediate completion
       // We'll just launch the minigame if it's not done.
@@ -42,11 +44,16 @@ export const WorldScreen: React.FC<WorldScreenProps> = ({ worldId, onBack, onLau
     }
   };
 
+  const handleBack = () => {
+    playClick();
+    onBack();
+  };
+
   return (
     <div className="p-4 md:p-8">
       <div className="flex items-center mb-6 px-2">
         <button 
-          onClick={onBack}
+          onClick={handleBack}
           className="w-12 h-12 rounded-2xl bg-white dark:bg-slate-800 shadow-md border-b-4 border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-500 hover:text-[#008080] hover:-translate-y-0.5 transition-all mr-4"
         >
           <ArrowLeft size={24} />

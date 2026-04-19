@@ -8,6 +8,7 @@ import { WorldScreen } from './screens/WorldScreen';
 import { MiniGameScreen } from './screens/MiniGameScreen';
 import { ParentalDashboard } from './screens/ParentalDashboard';
 import { BreathingSOSModal } from './components/BreathingSOSModal';
+import { playClick } from './lib/audio';
 
 function AppContent() {
   const { hearts, isDarkMode, toggleDarkMode, language, toggleLanguage } = useGame();
@@ -19,13 +20,35 @@ function AppContent() {
   const isPt = language === 'pt';
 
   const handleSelectWorld = (worldId: string) => {
+    playClick();
     setSelectedWorld(worldId);
     setCurrentScreen('world');
   };
 
   const handleBackToHome = () => {
+    playClick();
     setSelectedWorld(null);
     setCurrentScreen('home');
+  };
+
+  const handleToggleLanguage = () => {
+    playClick();
+    toggleLanguage();
+  };
+
+  const handleToggleDarkMode = () => {
+    playClick();
+    toggleDarkMode();
+  };
+
+  const handleOpenParental = () => {
+    playClick();
+    setCurrentScreen('parental');
+  };
+
+  const handleOpenSOS = () => {
+    playClick();
+    setSosOpen(true);
   };
 
   return (
@@ -56,7 +79,7 @@ function AppContent() {
 
           <div className="flex gap-2 sm:gap-4">
             <button 
-               onClick={toggleLanguage}
+               onClick={handleToggleLanguage}
               className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white text-slate-400 dark:bg-slate-700 dark:text-slate-200 flex items-center justify-center hover:scale-105 transition-transform border-4 border-[#008080]/10 dark:border-slate-600 shadow-md font-bold text-sm"
               aria-label="Toggle Language"
             >
@@ -64,7 +87,7 @@ function AppContent() {
             </button>
 
             <button 
-               onClick={() => setCurrentScreen('parental')}
+               onClick={handleOpenParental}
               className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-[#9370DB] text-white flex items-center justify-center hover:scale-105 transition-transform border-4 border-white shadow-md"
               aria-label="Painel dos Pais"
             >
@@ -72,7 +95,7 @@ function AppContent() {
             </button>
 
             <button 
-               onClick={toggleDarkMode}
+               onClick={handleToggleDarkMode}
               className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white text-slate-400 dark:bg-slate-700 dark:text-slate-200 flex items-center justify-center hover:scale-105 transition-transform border-4 border-[#008080]/10 dark:border-slate-600 shadow-md"
               aria-label="Alternar Tema Escuro"
             >
@@ -114,7 +137,7 @@ function AppContent() {
       {/* Floating SOS Button */}
       <div className="fixed bottom-6 right-6 z-50">
         <button
-          onClick={() => setSosOpen(true)}
+          onClick={handleOpenSOS}
           className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-[#FF4747] shadow-2xl flex items-center justify-center text-white motion-safe:animate-pulse hover:scale-110 transition-transform border-4 sm:border-8 border-white dark:border-slate-800"
           aria-label="Botão Calma SOS"
         >

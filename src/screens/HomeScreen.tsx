@@ -2,6 +2,7 @@ import React from 'react';
 import { motion } from 'motion/react';
 import { Home, School, Trees, Star, Heart, Crown, UserCircle2 } from 'lucide-react';
 import { useGame } from '../state/GameContext';
+import { playClick } from '../lib/audio';
 
 interface WorldCardProps {
   title: string;
@@ -16,7 +17,10 @@ const WorldCard: React.FC<WorldCardProps> = ({ title, subtitle, icon, color, onC
     <motion.button
       whileHover={{ scale: 1.05 }}
       whileTap={{ scale: 0.95 }}
-      onClick={onClick}
+      onClick={() => {
+        playClick();
+        onClick();
+      }}
       className={`w-full ${color} rounded-[32px] p-6 text-left relative overflow-hidden shadow-xl border-4 border-white dark:border-slate-700`}
     >
       <div className="relative z-10 flex flex-col h-full justify-between gap-4">
@@ -64,12 +68,17 @@ export const HomeScreen: React.FC<{ onSelectWorld: (worldId: string) => void }> 
     theoMsg: isPt ? 'Ei! Lembra que não tem pressa. Você pode escolher a atividade que quiser, no seu próprio tempo! 🌟' : 'Hey! Remember there is no rush. You can choose the activity you want, in your own time! 🌟'
   };
 
+  const handleCharacterSelect = (char: 'sofia' | 'theo') => {
+    playClick();
+    setActiveCharacter(char);
+  };
+
   return (
     <div className="p-6 md:p-8">
       {/* CHARACTER SELECTOR */}
       <div className="flex justify-center gap-6 mb-8">
         <button 
-          onClick={() => setActiveCharacter('sofia')}
+          onClick={() => handleCharacterSelect('sofia')}
           className={`relative group flex flex-col items-center transition-transform ${activeCharacter === 'sofia' ? 'scale-110' : 'scale-90 opacity-70 hover:scale-100 hover:opacity-100'}`}
         >
           <div className={`w-20 h-20 sm:w-24 sm:h-24 rounded-full border-4 shadow-xl flex items-center justify-center bg-gradient-to-br from-pink-100 to-pink-200 overflow-hidden ${activeCharacter === 'sofia' ? 'border-[#FF69B4] shadow-[#FF69B4]/30' : 'border-white'}`}>
@@ -79,7 +88,7 @@ export const HomeScreen: React.FC<{ onSelectWorld: (worldId: string) => void }> 
         </button>
 
         <button 
-          onClick={() => setActiveCharacter('theo')}
+          onClick={() => handleCharacterSelect('theo')}
           className={`relative group flex flex-col items-center transition-transform ${activeCharacter === 'theo' ? 'scale-110' : 'scale-90 opacity-70 hover:scale-100 hover:opacity-100'}`}
         >
           <div className={`w-20 h-20 sm:w-24 sm:h-24 rounded-full border-4 shadow-xl flex items-center justify-center bg-gradient-to-br from-teal-100 to-teal-200 overflow-hidden ${activeCharacter === 'theo' ? 'border-[#008080] shadow-[#008080]/30' : 'border-white'}`}>

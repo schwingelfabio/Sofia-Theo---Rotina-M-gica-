@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { useGame } from '../state/GameContext';
 import { ROUTINES, RoutineTask } from '../data/routines';
 import { Star, Heart, UserCircle2 } from 'lucide-react';
+import { playStarTap, playSuccess, playClick } from '../lib/audio';
 
 interface MiniGameScreenProps {
   taskId: string;
@@ -33,9 +34,11 @@ export const MiniGameScreen: React.FC<MiniGameScreenProps> = ({ taskId, onComple
     setTimeout(() => setIsWiggling(false), 300);
 
     if (progress < totalSteps - 1) {
+      playStarTap();
       setProgress(p => p + 1);
     } else {
       // Completed!
+      playSuccess();
       setProgress(totalSteps);
       setTimeout(() => {
         completeRoutine(currentTask!.id);
@@ -91,7 +94,10 @@ export const MiniGameScreen: React.FC<MiniGameScreenProps> = ({ taskId, onComple
             </div>
 
             <button 
-              onClick={onCancel}
+              onClick={() => {
+                playClick();
+                onCancel();
+              }}
               className="mt-8 px-8 py-4 w-full rounded-2xl font-bold bg-white text-[#2D3748] border-2 border-slate-200 hover:bg-slate-50 dark:bg-slate-700 dark:text-slate-200 dark:border-slate-600 dark:hover:bg-slate-600 transition-colors shadow-sm"
             >
               {isPt ? 'Voltar' : 'Back'}

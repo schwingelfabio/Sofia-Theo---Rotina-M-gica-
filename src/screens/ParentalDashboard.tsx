@@ -5,6 +5,7 @@ import { loginWithGoogle, logout } from '../lib/firebase';
 import { ROUTINES } from '../data/routines';
 import { ArrowLeft, LineChart, Trophy, Settings, Crown, ExternalLink, LogOut, LogIn } from 'lucide-react';
 import { motion } from 'motion/react';
+import { playClick } from '../lib/audio';
 
 export const ParentalDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) => {
   const { hearts, completedRoutines, language } = useGame();
@@ -15,11 +16,26 @@ export const ParentalDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) 
   const totalTasks = Object.values(ROUTINES).flat().length;
   const progressPercent = Math.round((completedRoutines.length / totalTasks) * 100) || 0;
 
+  const handleBack = () => {
+    playClick();
+    onBack();
+  };
+
+  const handleLogin = () => {
+    playClick();
+    loginWithGoogle();
+  };
+
+  const handleLogout = () => {
+    playClick();
+    logout();
+  };
+
   return (
     <div className="p-4 md:p-8 max-w-2xl mx-auto">
       <div className="flex items-center mb-10 px-2">
         <button 
-          onClick={onBack}
+          onClick={handleBack}
           className="w-12 h-12 rounded-2xl bg-white dark:bg-slate-800 shadow-md border-b-4 border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-500 hover:text-[#9370DB] hover:-translate-y-0.5 transition-all mr-4"
         >
           <ArrowLeft size={24} />
@@ -69,11 +85,11 @@ export const ParentalDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) 
             {isPt ? 'Sincronização em Nuvem' : 'Cloud Sync'}
           </h4>
           {user ? (
-            <button onClick={logout} className="flex items-center gap-2 text-xs font-bold text-slate-500 hover:text-red-500 transition-colors">
+            <button onClick={handleLogout} className="flex items-center gap-2 text-xs font-bold text-slate-500 hover:text-red-500 transition-colors">
               <LogOut size={16} /> {isPt ? 'Sair' : 'Log out'}
             </button>
           ) : (
-            <button onClick={loginWithGoogle} className="flex items-center gap-2 text-sm font-bold bg-[#FF69B4] text-white px-4 py-2 rounded-xl shadow-md hover:bg-[#ff52a3] transition-colors">
+            <button onClick={handleLogin} className="flex items-center gap-2 text-sm font-bold bg-[#FF69B4] text-white px-4 py-2 rounded-xl shadow-md hover:bg-[#ff52a3] transition-colors">
               <LogIn size={16} /> {isPt ? 'Fazer Login' : 'Log in'}
             </button>
           )}
@@ -94,7 +110,10 @@ export const ParentalDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) 
       <motion.button 
         whileHover={{ scale: 1.02 }}
         whileTap={{ scale: 0.98 }}
-        onClick={() => window.open('https://www.conectateaia.com.br', '_blank')}
+        onClick={() => {
+          playClick();
+          window.open('https://www.conectateaia.com.br', '_blank');
+        }}
         className="w-full bg-[#008080] text-white rounded-[32px] p-5 shadow-lg border-4 border-white dark:border-slate-700 mb-8 flex items-center justify-between group cursor-pointer hover:bg-[#006666] transition-colors"
       >
         <div className="flex items-center gap-4">
@@ -116,7 +135,10 @@ export const ParentalDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) 
         <motion.button 
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
-          onClick={() => window.open(isPt ? 'https://buy.stripe.com/8x214o1fH8TI8jKaXh2wU06' : 'https://buy.stripe.com/cNifZigaB9XM8jK9Td2wU02', '_blank')}
+          onClick={() => {
+            playClick();
+            window.open(isPt ? 'https://buy.stripe.com/8x214o1fH8TI8jKaXh2wU06' : 'https://buy.stripe.com/cNifZigaB9XM8jK9Td2wU02', '_blank');
+          }}
           className="w-full bg-white dark:bg-slate-800 text-[#2D3748] dark:text-white rounded-[32px] p-6 border-4 border-[#FFA500]/30 shadow-md flex flex-col items-center gap-4 cursor-pointer relative overflow-hidden group"
         >
           <div className="w-12 h-12 bg-[#FFF5E6] dark:bg-[#FFA500]/10 rounded-2xl flex items-center justify-center border-2 border-[#FFA500]/20 text-[#FFA500] group-hover:rotate-12 transition-transform z-10 shrink-0">
@@ -138,7 +160,10 @@ export const ParentalDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) 
         <motion.button 
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
-          onClick={() => window.open(isPt ? 'https://buy.stripe.com/4gMdRa9Mdfi643u1mH2wU07' : 'https://buy.stripe.com/cNibJ2bUlfi643u5CX2wU03', '_blank')}
+          onClick={() => {
+            playClick();
+            window.open(isPt ? 'https://buy.stripe.com/4gMdRa9Mdfi643u1mH2wU07' : 'https://buy.stripe.com/cNibJ2bUlfi643u5CX2wU03', '_blank');
+          }}
           className="w-full bg-gradient-to-br from-[#FFD700] via-[#FFA500] to-[#FF8C00] text-white rounded-[32px] p-6 border-4 border-white dark:border-slate-700 shadow-xl shadow-[#FFA500]/30 flex flex-col items-center gap-4 cursor-pointer relative overflow-hidden group"
         >
           <div className="absolute top-3 right-3 bg-[#FF4747] text-white text-[10px] font-black px-2 py-1 rounded-full uppercase tracking-widest shadow-md z-20 animate-pulse border border-white/50">

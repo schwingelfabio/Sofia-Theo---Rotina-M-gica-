@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Heart, X } from 'lucide-react';
 import { useGame } from '../state/GameContext';
+import { playClick } from '../lib/audio';
 
 export const BreathingSOSModal: React.FC<{ onClose: () => void }> = ({ onClose }) => {
   const [phase, setPhase] = useState<'breathe_in' | 'hold' | 'breathe_out'>('breathe_in');
@@ -46,6 +47,11 @@ export const BreathingSOSModal: React.FC<{ onClose: () => void }> = ({ onClose }
     }
   };
 
+  const handleClose = () => {
+    playClick();
+    onClose();
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -54,7 +60,7 @@ export const BreathingSOSModal: React.FC<{ onClose: () => void }> = ({ onClose }
       className="fixed inset-0 z-[100] bg-[#FF4747]/95 backdrop-blur-md flex flex-col items-center justify-center p-6"
     >
       <button 
-        onClick={onClose}
+        onClick={handleClose}
         className="absolute top-8 right-8 w-14 h-14 bg-white/20 hover:bg-white/30 rounded-2xl border-2 border-white/20 flex items-center justify-center text-white transition-all shadow-md"
       >
         <X size={28} />
@@ -90,7 +96,7 @@ export const BreathingSOSModal: React.FC<{ onClose: () => void }> = ({ onClose }
       </motion.p>
 
       <button 
-        onClick={onClose}
+        onClick={handleClose}
         className="mt-20 bg-white text-[#FF4747] px-10 py-5 rounded-[24px] font-black text-xl hover:bg-red-50 hover:scale-105 transition-all shadow-xl border-4 border-white"
       >
         {isPt ? 'Estou me sentindo melhor' : "I'm feeling better"}
