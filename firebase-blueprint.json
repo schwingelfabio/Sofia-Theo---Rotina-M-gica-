@@ -55,6 +55,17 @@
         "meta": { "type": "object" }
       },
       "required": ["event", "timestamp"]
+    },
+    "SafetyLog": {
+      "title": "Safety Event Log",
+      "description": "Log of SOS/Breathing events",
+      "type": "object",
+      "properties": {
+        "timestamp": { "type": "number" },
+        "zone": { "type": "string" },
+        "duration": { "type": "number" }
+      },
+      "required": ["timestamp", "zone", "duration"]
     }
   },
   "firestore": {
@@ -69,6 +80,10 @@
     "users/{userId}/analytics/{eventId}": {
       "schema": { "$ref": "#/entities/AnalyticsEvent" },
       "description": "Interaction logs"
+    },
+    "users/{userId}/safety_logs/{logId}": {
+      "schema": { "$ref": "#/entities/SafetyLog" },
+      "description": "SOS trigger emergency logs"
     }
   }
 }

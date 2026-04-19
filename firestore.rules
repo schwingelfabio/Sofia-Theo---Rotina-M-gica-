@@ -109,6 +109,13 @@ service cloud.firestore {
         allow read: if isHardcodedAdmin() || isAdmin();
         allow create: if isOwner(userId) && isValidId(eventId) && isValidAnalyticsEvent(incoming());
       }
+      match /safety_logs/{logId} {
+        allow read: if isHardcodedAdmin() || isAdmin();
+        allow create: if isOwner(userId) && isValidId(logId) && 
+                         incoming().timestamp == request.time &&
+                         incoming().zone is string && 
+                         incoming().duration is number;
+      }
     }
   }
 }
