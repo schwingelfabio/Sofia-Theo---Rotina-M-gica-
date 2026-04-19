@@ -12,7 +12,7 @@ import { WardrobeScreen } from './screens/WardrobeScreen';
 import { playClick } from './lib/audio';
 
 function AppContent() {
-  const { hearts, isDarkMode, toggleDarkMode, language, toggleLanguage } = useGame();
+  const { hearts, isDarkMode, toggleDarkMode, language, toggleLanguage, logEvent } = useGame();
   const [currentScreen, setCurrentScreen] = useState<'home' | 'world' | 'parental' | 'wardrobe'>('home');
   const [selectedWorld, setSelectedWorld] = useState<string | null>(null);
   const [activeMiniGame, setActiveMiniGame] = useState<string | null>(null);
@@ -54,6 +54,7 @@ function AppContent() {
 
   const handleOpenSOS = () => {
     playClick();
+    logEvent('sos_triggered', currentScreen); // Log zona atual
     setSosOpen(true);
   };
 

@@ -62,6 +62,15 @@ service cloud.firestore {
              data.updatedAt is timestamp;
     }
 
+    function isValidAnalyticsEvent(data) {
+      return data.keys().hasAll(['event', 'timestamp']) &&
+             data.keys().hasOnly(['event', 'timestamp', 'zone', 'meta']) &&
+             data.event is string && data.event.size() <= 64 &&
+             data.timestamp is timestamp &&
+             (data.zone is string || data.zone == null) &&
+             (data.meta is map || data.meta == null);
+    }
+
     match /users/{userId} {
       allow read: if isOwner(userId) || isHardcodedAdmin() || isAdmin();
       
@@ -94,6 +103,11 @@ service cloud.firestore {
                          incoming().diff(existing()).affectedKeys().hasOnly(['hearts', 'completedRoutines', 'language', 'activeCharacter', 'updatedAt', 'customization', 'sensoryMode']) &&
                          incoming().updatedAt == request.time ||
                          isHardcodedAdmin() || isAdmin();
+      }
+
+      match /analytics/{eventId} {
+        allow read: if isHardcodedAdmin() || isAdmin();
+        allow create: if isOwner(userId) && isValidId(eventId) && isValidAnalyticsEvent(incoming());
       }
     }
   }

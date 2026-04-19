@@ -43,6 +43,18 @@
         "updatedAt": { "type": "number", "description": "Timestamp" }
       },
       "required": ["hearts", "completedRoutines", "language", "sensoryMode", "activeCharacter", "customization", "updatedAt"]
+    },
+    "AnalyticsEvent": {
+      "title": "Analytics Event",
+      "description": "Log of interaction events",
+      "type": "object",
+      "properties": {
+        "event": { "type": "string" },
+        "zone": { "type": "string" },
+        "timestamp": { "type": "number" },
+        "meta": { "type": "object" }
+      },
+      "required": ["event", "timestamp"]
     }
   },
   "firestore": {
@@ -53,6 +65,10 @@
     "users/{userId}/progress/main": {
       "schema": { "$ref": "#/entities/GameProgress" },
       "description": "User game progress"
+    },
+    "users/{userId}/analytics/{eventId}": {
+      "schema": { "$ref": "#/entities/AnalyticsEvent" },
+      "description": "Interaction logs"
     }
   }
 }

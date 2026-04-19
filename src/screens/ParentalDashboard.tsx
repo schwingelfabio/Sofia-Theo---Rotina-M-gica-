@@ -3,9 +3,10 @@ import { useGame } from '../state/GameContext';
 import { useAuth } from '../state/AuthContext';
 import { loginWithGoogle, logout } from '../lib/firebase';
 import { ROUTINES } from '../data/routines';
-import { ArrowLeft, LineChart, Trophy, Settings, Crown, ExternalLink, LogOut, LogIn } from 'lucide-react';
+import { ArrowLeft, LineChart, Trophy, Settings, Crown, ExternalLink, LogOut, LogIn, BarChart3 } from 'lucide-react';
 import { motion } from 'motion/react';
 import { playClick } from '../lib/audio';
+import { AnalyticsViewer } from '../components/AnalyticsViewer';
 
 export const ParentalDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) => {
   const { hearts, completedRoutines, language, sensoryMode, toggleSensoryMode } = useGame();
@@ -203,6 +204,7 @@ export const ParentalDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) 
           <div className="absolute top-0 right-0 -mt-10 -mr-10 w-32 h-32 bg-white/20 rounded-full blur-3xl pointer-events-none"></div>
         </motion.button>
       </div>
+      {isAdmin && <AnalyticsViewer />}
     </div>
   );
 };

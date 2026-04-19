@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useAuth } from './AuthContext';
 import { db } from '../lib/firebase';
-import { doc, getDoc, setDoc, updateDoc, serverTimestamp } from 'firebase/firestore';
+import { doc, getDoc, setDoc, updateDoc, serverTimestamp, collection, addDoc } from 'firebase/firestore';
 
 interface CharacterCustomization {
   outfit: string;
@@ -25,6 +25,7 @@ interface GameState {
   toggleLanguage: () => void;
   setActiveCharacter: (character: 'sofia' | 'theo') => void;
   setCustomization: (character: 'sofia' | 'theo', type: 'outfit' | 'accessory', value: string) => void;
+  logEvent: (event: string, zone?: string, meta?: Record<string, any>) => void;
 }
 
 const defaultCustomization = {
@@ -205,10 +206,26 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }));
   };
 
+  const logEvent = async (event: string, zone?: string, meta?: Record<string, any>) => {
+    if (user) {
+      try {
+        const analyticsRef = collection(db, 'users', user.uid, 'analytics');
+        await addDoc(analyticsRef, {
+          event,
+          zone: zone || null,
+          timestamp: serverTimestamp(),
+          meta: meta || null
+        });
+      } catch (error) {
+        console.error("Error logging event:", error);
+      }
+    }
+  };
+
   return (
     <GameContext.Provider value={{
       hearts, completedRoutines, unlockedItems, isDarkMode, sensoryMode, language, activeCharacter, customization,
-      addHearts, completeRoutine, unlockItem, toggleDarkMode, toggleSensoryMode, toggleLanguage, setActiveCharacter, setCustomization
+      addHearts, completeRoutine, unlockItem, toggleDarkMode, toggleSensoryMode, toggleLanguage, setActiveCharacter, setCustomization, logEvent
     }}>
       {children}
     </GameContext.Provider>
