@@ -3,12 +3,12 @@ import { useGame } from '../state/GameContext';
 import { useAuth } from '../state/AuthContext';
 import { loginWithGoogle, logout } from '../lib/firebase';
 import { ROUTINES } from '../data/routines';
-import { ArrowLeft, LineChart, Trophy, Settings, Crown, ExternalLink, LogOut, LogIn, BarChart3 } from 'lucide-react';
+import { ArrowLeft, LineChart, Trophy, Settings, Crown, ExternalLink, LogOut, LogIn, BarChart3, ShieldAlert } from 'lucide-react';
 import { motion } from 'motion/react';
 import { playClick } from '../lib/audio';
 import { AnalyticsViewer } from '../components/AnalyticsViewer';
 
-export const ParentalDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) => {
+export const ParentalDashboard: React.FC<{ onBack: () => void; onOpenAdmin: () => void }> = ({ onBack, onOpenAdmin }) => {
   const { hearts, completedRoutines, language, sensoryMode, toggleSensoryMode } = useGame();
   const { user, isAdmin } = useAuth();
 
@@ -205,9 +205,21 @@ export const ParentalDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) 
         </motion.button>
       </div>
       {isAdmin && (
-        <div className="mt-12">
-            <h2 className="text-3xl font-black text-white mb-6">Mission Control (Global)</h2>
-            <AnalyticsViewer />
+        <div className="mt-12 bg-slate-900 p-8 rounded-[32px] border-4 border-[#00A0A0]/20 shadow-2xl">
+            <h2 className="text-3xl font-black text-white mb-6 flex items-center gap-3">
+              <ShieldAlert className="text-[#00A0A0]" /> Mission Control (Global)
+            </h2>
+            <div className="flex gap-4">
+                <button 
+                  onClick={onOpenAdmin}
+                  className="bg-[#008080] text-white px-8 py-4 rounded-2xl font-black text-lg hover:bg-[#00A0A0] transition-colors"
+                >
+                    Acessar Admin Dashboard Completo
+                </button>
+            </div>
+            <div className="mt-8">
+                <AnalyticsViewer />
+            </div>
         </div>
       )}
     </div>

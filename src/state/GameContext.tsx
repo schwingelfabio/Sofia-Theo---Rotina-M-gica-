@@ -50,6 +50,7 @@ const defaultState: GameState = {
   toggleLanguage: () => {},
   setActiveCharacter: () => {},
   setCustomization: () => {},
+  logEvent: async () => {}
 };
 
 const GameContext = createContext<GameState>(defaultState);

@@ -7,13 +7,14 @@ import { HomeScreen } from './screens/HomeScreen';
 import { WorldScreen } from './screens/WorldScreen';
 import { MiniGameScreen } from './screens/MiniGameScreen';
 import { ParentalDashboard } from './screens/ParentalDashboard';
+import { SuperAdminDashboard } from './screens/SuperAdminDashboard';
 import { BreathingSOSModal } from './components/BreathingSOSModal';
 import { WardrobeScreen } from './screens/WardrobeScreen';
 import { playClick } from './lib/audio';
 
 function AppContent() {
   const { hearts, isDarkMode, toggleDarkMode, language, toggleLanguage, logEvent } = useGame();
-  const [currentScreen, setCurrentScreen] = useState<'home' | 'world' | 'parental' | 'wardrobe'>('home');
+  const [currentScreen, setCurrentScreen] = useState<'home' | 'world' | 'parental' | 'wardrobe' | 'admin'>('home');
   const [selectedWorld, setSelectedWorld] = useState<string | null>(null);
   const [activeMiniGame, setActiveMiniGame] = useState<string | null>(null);
   const [sosOpen, setSosOpen] = useState(false);
@@ -45,6 +46,11 @@ function AppContent() {
   const handleOpenParental = () => {
     playClick();
     setCurrentScreen('parental');
+  };
+
+  const handleOpenAdmin = () => {
+    playClick();
+    setCurrentScreen('admin');
   };
 
   const handleOpenWardrobe = () => {
@@ -135,7 +141,11 @@ function AppContent() {
             )}
 
             {currentScreen === 'parental' && (
-              <ParentalDashboard onBack={handleBackToHome} />
+              <ParentalDashboard onBack={handleBackToHome} onOpenAdmin={handleOpenAdmin} />
+            )}
+
+            {currentScreen === 'admin' && (
+                <SuperAdminDashboard />
             )}
 
             {currentScreen === 'wardrobe' && (
