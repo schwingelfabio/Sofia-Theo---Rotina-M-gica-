@@ -20,6 +20,8 @@ interface WorldState {
   
   // Missão: Manhã de Herói
   currentMissionStep: 'none' | 'wake_up' | 'get_dressed' | 'brush_teeth' | 'completed';
+  missionStartTime: number | null;
+  stepStartTime: number | null;
   isAlarmPlaying: boolean;
   clothesChoice: 'cotton' | 'wool' | 'mesh' | null;
   teethCleanedCount: number;
@@ -34,6 +36,7 @@ interface WorldState {
   startSocialInteraction: () => void;
   setCooperating: (active: boolean) => void;
   setMissionStep: (step: 'none' | 'wake_up' | 'get_dressed' | 'brush_teeth' | 'completed') => void;
+  startMission: () => void;
   toggleAlarm: (active: boolean) => void;
   setClothesChoice: (choice: 'cotton' | 'wool' | 'mesh') => void;
   cleanTooth: () => void;
@@ -54,6 +57,8 @@ export const useWorldStore = create<WorldState>((set) => ({
   socialInteractionStartTime: null,
   isCooperating: false,
   currentMissionStep: 'wake_up',
+  missionStartTime: Date.now(),
+  stepStartTime: Date.now(),
   isAlarmPlaying: true,
   clothesChoice: null,
   teethCleanedCount: 0,
@@ -66,7 +71,8 @@ export const useWorldStore = create<WorldState>((set) => ({
   setSocialMode: (active) => set({ isSocialModeActive: active }),
   startSocialInteraction: () => set({ socialInteractionStartTime: Date.now() }),
   setCooperating: (active) => set({ isCooperating: active }),
-  setMissionStep: (step) => set({ currentMissionStep: step }),
+  setMissionStep: (step) => set({ currentMissionStep: step, stepStartTime: Date.now() }),
+  startMission: () => set({ missionStartTime: Date.now(), stepStartTime: Date.now() }),
   toggleAlarm: (active) => set({ isAlarmPlaying: active }),
   setClothesChoice: (choice) => set({ clothesChoice: choice }),
   cleanTooth: () => set((state) => ({ teethCleanedCount: state.teethCleanedCount + 1 })),

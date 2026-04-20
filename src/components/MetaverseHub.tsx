@@ -16,6 +16,7 @@ import { VirtualControls } from './UI/VirtualControls';
 import { CalmBubble } from './World/CalmBubble';
 import { SocialInteractionUI } from './UI/SocialInteractionUI';
 import { MissionUI } from './UI/MissionUI';
+import { MissionReport } from './UI/MissionReport';
 
 export const MetaverseHub: React.FC = () => {
     const store = useMemo(() => createXRStore(), []);
@@ -30,6 +31,7 @@ export const MetaverseHub: React.FC = () => {
         <div className="relative w-full h-screen overflow-hidden bg-black">
             <TransitionOverlay />
             <MissionUI />
+            <MissionReport />
             
             {/* Stats Overlay Minimal */}
             <div className="absolute top-4 right-4 z-50 flex items-center gap-4 bg-white/10 backdrop-blur rounded-full px-6 py-2 border border-white/20">
