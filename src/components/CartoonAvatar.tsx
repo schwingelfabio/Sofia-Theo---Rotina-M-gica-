@@ -51,6 +51,9 @@ export const CartoonAvatar: React.FC<AvatarProps> = ({ userId, isLocal }) => {
             meshRef.current.position.x, meshRef.current.position.y, meshRef.current.position.z,
             true
         );
+
+        // Atualiza Store de Mundo
+        useWorldStore.getState().setAvatarPosition(meshRef.current.position.clone());
     }
   });
 

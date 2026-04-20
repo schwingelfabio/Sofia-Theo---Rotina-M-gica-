@@ -3,7 +3,7 @@ import { Canvas } from '@react-three/fiber';
 import { Environment, PerspectiveCamera, OrbitControls } from '@react-three/drei';
 import { XR, VRButton, createXRStore } from '@react-three/xr';
 import { useWorldStore } from '../state/useWorldStore';
-import { Portal } from './World/Portal';
+import { CityEnvironment } from './World/CityEnvironment';
 import { NPC } from './NPCs/NPC';
 import { npcRegistry } from './NPCs/npcRegistry';
 import { CartoonAvatar } from './CartoonAvatar';
@@ -15,39 +15,31 @@ export const MetaverseHub: React.FC = () => {
   return (
     <>
       <div className="absolute top-4 left-4 z-10 text-white font-bold bg-slate-900 p-2 rounded pointer-events-none">
-        Zona Atual: {currentZone.toUpperCase()}
+        Conecta-Verse v1.0 | Zona: {currentZone.toUpperCase()}
       </div>
       <VRButton />
-      <Canvas>
+      <Canvas shadows>
         <XR store={store}>
-          <PerspectiveCamera makeDefault position={[0, 2, 10]} />
+          <PerspectiveCamera makeDefault position={[0, 10, 20]} />
           <OrbitControls />
           
-          <ambientLight intensity={0.5} />
+          <ambientLight intensity={0.6} />
+          <directionalLight position={[10, 10, 5]} intensity={1} castShadow />
           <Environment preset="city" />
+
+          {/* O Mundo Aberto da Cidade */}
+          <CityEnvironment />
 
           {/* Avatar Local */}
           <CartoonAvatar userId="me" isLocal />
 
-          {currentZone === 'city' && (
-            <>
-              <Portal position={[0, 0, 5]} targetZone="home" label="Minha Casa" />
-              <Portal position={[5, 0, 0]} targetZone="school" label="Escola" />
-              <Portal position={[-5, 0, 0]} targetZone="park" label="Parque" />
-              <Portal position={[0, 0, -5]} targetZone="clinic" label="Clínica" />
-            </>
-          )}
-
+          {/* Instanciação Dinâmica dos NPCs */}
           {currentZone === 'school' && (
-            <NPC definition={npcRegistry.clara} position={[0, 0, 0]} />
+            <NPC definition={npcRegistry.clara} position={[20, 0, 0]} modelUrl="/models/clara.glb" />
           )}
 
           {currentZone === 'clinic' && (
-            <NPC definition={npcRegistry.aris} position={[0, 0, 0]} />
-          )}
-
-          {currentZone !== 'city' && (
-            <Portal position={[0, -1, 0]} targetZone="city" label="Voltar à Cidade" />
+            <NPC definition={npcRegistry.aris} position={[-20, 0, 0]} modelUrl="/models/aris.glb" />
           )}
         </XR>
       </Canvas>
