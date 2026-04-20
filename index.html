@@ -1,28 +1,420 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>My Google AI Studio App</title>
-  </head>
-  <body>
-    <div id="loading" style="position:fixed;top:0;left:0;width:100%;height:100%;background:#ffecd2;display:flex;align-items:center;justify-content:center;z-index:10000;font-family:sans-serif;flex-direction:column;">
-      <div style="font-size:24px;font-weight:bold;color:#80deea;margin-bottom:10px;">NEURO-SYNC ENGINE</div>
-      <div style="width:200px;height:4px;background:rgba(128,222,234,0.2);border-radius:2px;overflow:hidden;">
-        <div style="width:100%;height:100%;background:#80deea;animation:load 2s infinite ease-in-out;"></div>
-      </div>
-      <style>@keyframes load{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}</style>
-    </div>
-    <canvas id="world"></canvas>
-    <script src="https://unpkg.com/three@0.173.0/build/three.min.js"></script>
-    <script type="module" src="/src/main.ts"></script>
-    <script>
-      window.addEventListener('load', () => {
-        setTimeout(() => {
-          document.getElementById('loading').style.display = 'none';
-        }, 1000);
-      });
-    </script>
-  </body>
-</html>
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Sofia & Theo: Rotina Mágica</title>
+    <style>
+        :root {
+            --teal: #40E0D0;
+            --soft-pink: #FFB6C1;
+            --warm-yellow: #FFFACD;
+            --text-dark: #4A4A4A;
+            --white: #FFFFFF;
+        }
 
+        * {
+            box-sizing: border-box;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Comic Sans MS', 'Chalkboard SE', cursive, sans-serif;
+            background-color: var(--warm-yellow);
+            color: var(--text-dark);
+            overflow: hidden;
+            height: 100vh;
+            width: 100vw;
+        }
+
+        /* Telas */
+        .screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .screen.active {
+            display: flex;
+        }
+
+        /* HUD */
+        #hud {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--white);
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-size: 24px;
+            font-weight: bold;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            z-index: 1000;
+            border: 3px solid var(--teal);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        #calm-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 80px;
+            height: 80px;
+            background: var(--white);
+            border-radius: 50%;
+            border: 4px solid var(--soft-pink);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            cursor: pointer;
+            z-index: 1000;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        /* Cidade */
+        #city-screen {
+            background: linear-gradient(to bottom, #87CEEB, var(--warm-yellow));
+            position: relative;
+        }
+
+        .building {
+            position: absolute;
+            cursor: pointer;
+            transition: transform 0.3s;
+            text-align: center;
+        }
+
+        .building:hover { transform: scale(1.05); }
+
+        .building img {
+            width: 150px;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .building span {
+            background: var(--white);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 18px;
+            border: 2px solid var(--teal);
+            margin-top: 5px;
+            display: inline-block;
+        }
+
+        /* Cena Interna */
+        .interior {
+            background-color: var(--white);
+            padding: 20px;
+            width: 100%;
+            height: 100%;
+        }
+
+        .back-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            padding: 15px 30px;
+            background: var(--soft-pink);
+            border-radius: 30px;
+            font-weight: bold;
+            font-size: 20px;
+            border: none;
+            color: white;
+            cursor: pointer;
+        }
+
+        /* Personagens */
+        .character-guide {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            width: 250px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .bubble {
+            background: white;
+            padding: 15px;
+            border-radius: 20px;
+            margin-bottom: 10px;
+            border: 2px solid var(--teal);
+            font-size: 18px;
+            position: relative;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        /* Atividade de Arrastar */
+        .drag-container {
+            display: flex;
+            gap: 20px;
+            margin-top: 50px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .card {
+            width: 120px;
+            height: 150px;
+            background: var(--warm-yellow);
+            border: 3px solid var(--teal);
+            border-radius: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: grab;
+            font-weight: bold;
+            text-align: center;
+            padding: 10px;
+        }
+
+        .drop-zone {
+            width: 140px;
+            height: 170px;
+            border: 3px dashed #ccc;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 30px;
+        }
+
+        /* Respiração */
+        #respira {
+            font-size: 40px;
+            font-weight: bold;
+            color: var(--teal);
+            transition: transform 4s ease-in-out;
+        }
+
+        .respira-expand { transform: scale(2.5); }
+
+        /* Botões Grandes */
+        .big-btn {
+            padding: 20px 40px;
+            font-size: 28px;
+            border-radius: 50px;
+            background: var(--teal);
+            color: white;
+            border: none;
+            margin: 10px;
+            cursor: pointer;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+
+        .animate-float { animation: float 3s infinite ease-in-out; }
+
+    </style>
+</head>
+<body>
+
+    <div id="hud">💖 <span id="stars">0</span> Corações</div>
+    <div id="calm-btn" title="Calm Zone">🧘</div>
+
+    <!-- Tela Inicial / Cidade -->
+    <div id="city-screen" class="screen active">
+        <h1 style="position:absolute; top:40px; font-size:36px; color:var(--text-dark); text-shadow: 2px 2px white;">Sofia & Theo: Rotina Mágica</h1>
+        
+        <div class="building" style="top: 50%; left: 15%;" onclick="loadRoom('casa')">
+            <img src="https://picsum.photos/seed/house/300/300" alt="Casa" referrerPolicy="no-referrer" style="border-radius:20px; border:5px solid var(--soft-pink);">
+            <span>Minha Casa</span>
+        </div>
+
+        <div class="building" style="top: 30%; left: 45%;" onclick="loadRoom('escola')">
+            <img src="https://picsum.photos/seed/school/300/300" alt="Escola" referrerPolicy="no-referrer" style="border-radius:20px; border:5px solid var(--teal);">
+            <span>Escola Amiga</span>
+        </div>
+
+        <div class="building" style="top: 60%; left: 55%;" onclick="loadRoom('parque')">
+            <img src="https://picsum.photos/seed/park/300/300" alt="Parque" referrerPolicy="no-referrer" style="border-radius:20px; border:5px solid #90EE90;">
+            <span>Parquinho</span>
+        </div>
+
+        <div class="building" style="top: 45%; left: 75%;" onclick="loadRoom('consultorio')">
+            <img src="https://picsum.photos/seed/clinic/300/300" alt="Consultório" referrerPolicy="no-referrer" style="border-radius:20px; border:5px solid #ADD8E6;">
+            <span>Neuro-Conecta AI</span>
+        </div>
+
+        <div class="character-guide">
+            <div class="bubble animate-float" id="city-msg">Olá! Vamos escolher um lugar para brincar hoje?</div>
+            <img src="https://ais-pre-vmd6mdvcvg7pcqhqzwjlam-155588884904.us-east1.run.app/assets/sofia_avatar.png" id="guide-img" style="width:150px; filter: drop-shadow(0 5px 15px rgba(0,0,0,0.2));" onerror="this.src='https://picsum.photos/seed/girl/200/200'">
+        </div>
+    </div>
+
+    <!-- Conteúdo dos Quartos (Dynamic) -->
+    <div id="room-screen" class="screen">
+        <button class="back-btn" onclick="backToCity()">⬅ Voltar</button>
+        <div id="room-content" style="text-align:center; padding: 50px;">
+            <!-- Conteúdo dinâmico aqui -->
+        </div>
+        <div class="character-guide">
+            <div class="bubble" id="room-msg">Muito bem!</div>
+            <img src="https://ais-pre-vmd6mdvcvg7pcqhqzwjlam-155588884904.us-east1.run.app/assets/theo_avatar.png" id="room-guide-img" style="width:150px;" onerror="this.src='https://picsum.photos/seed/boy/200/200'">
+        </div>
+    </div>
+
+    <!-- Calm Zone -->
+    <div id="calm-screen" class="screen" style="background-color: #E0FFFF;">
+        <button class="back-btn" onclick="hideCalm()">⬅ Voltar</button>
+        <div id="respira">RESPIRO</div>
+        <p style="font-size:24px; margin-top:100px; color:#5F9EA0;">Acompanhe o movimento...</p>
+    </div>
+
+    <script>
+        let stars = 0;
+        const screens = {
+            city: document.getElementById('city-screen'),
+            room: document.getElementById('room-screen'),
+            calm: document.getElementById('calm-screen')
+        };
+
+        function updateHUD() {
+            document.getElementById('stars').innerText = stars;
+        }
+
+        function loadRoom(type) {
+            screens.city.classList.remove('active');
+            screens.room.classList.add('active');
+            const content = document.getElementById('room-content');
+            const roomMsg = document.getElementById('room-msg');
+
+            if(type === 'casa') {
+                roomMsg.innerText = "Vamos organizar nossa rotina? Arraste as tarefas!";
+                content.innerHTML = `
+                    <h2 style="font-size:32px; color:var(--soft-pink);">Minha Casa</h2>
+                    <p style="font-size:20px;">O que fazemos primeiro?</p>
+                    <div id="task-zone" class="drop-zone" ondrop="drop(event)" ondragover="allowDrop(event)">
+                        <span style="color:#aaa;">Solte aqui</span>
+                    </div>
+                    <div class="drag-container">
+                        <div class="card" draggable="true" ondragstart="drag(event)" id="c1">☀️<br>Acordar</div>
+                        <div class="card" draggable="true" ondragstart="drag(event)" id="c2">🪥<br>Escovar</div>
+                        <div class="card" draggable="true" ondragstart="drag(event)" id="c3">🍎<br>Comer</div>
+                    </div>
+                `;
+            } else if(type === 'escola') {
+                roomMsg.innerText = "Na escola, falamos sobre como nos sentimos!";
+                content.innerHTML = `
+                    <h2 style="font-size:32px; color:var(--teal);">Escola Amiga</h2>
+                    <p style="font-size:24px;">Como você está se sentindo agora?</p>
+                    <div style="display:flex; justify-content:center; gap:20px; flex-wrap:wrap;">
+                        <button class="big-btn" onclick="reward(5)">😊 Feliz</button>
+                        <button class="big-btn" onclick="reward(5)">🤨 Curioso</button>
+                        <button class="big-btn" onclick="reward(5)">😴 Cansado</button>
+                    </div>
+                `;
+            } else if(type === 'parque') {
+                roomMsg.innerText = "É hora de brincar! No parquinho, cada um tem sua vez.";
+                content.innerHTML = `
+                    <h2 style="font-size:32px; color:#228B22;">Parquinho</h2>
+                    <p style="font-size:24px;">Theo está brincando no balanço.</p>
+                    <button class="big-btn" onclick="reward(10)">Esperar minha vez</button>
+                    <button class="big-btn" onclick="reward(10)">Chamar para brincar</button>
+                `;
+            } else if(type === 'consultorio') {
+                roomMsg.innerText = "O doutor é nosso amigo e nos ajuda a crescer.";
+                content.innerHTML = `
+                    <h2 style="font-size:32px; color:#4682B4;">Neuro-Conecta AI</h2>
+                    <p style="font-size:24px;">Vamos conversar um pouco?</p>
+                    <div style="background:#f9f9f9; padding:20px; border-radius:20px; border:2px solid #ddd; max-width:600px; margin:0 auto;">
+                        <p id="clinic-chat">Doutor: Olá! Hoje vamos aprender mais sobre os Corações Mágicos.</p>
+                        <button class="big-btn" style="font-size:20px;" onclick="talkToDoctor()">Ouvir o Doutor</button>
+                    </div>
+                `;
+            }
+        }
+
+        function talkToDoctor() {
+            const chat = document.getElementById('clinic-chat');
+            const messages = [
+                "Doutor: Cada coração que você ganha mostra como você é corajoso!",
+                "Doutor: Respire fundo quando precisar de calma.",
+                "Doutor: Você é muito especial para nós!"
+            ];
+            chat.innerText = messages[Math.floor(Math.random() * messages.length)];
+            reward(2);
+        }
+
+        function backToCity() {
+            screens.room.classList.remove('active');
+            screens.city.classList.add('active');
+        }
+
+        function reward(amount) {
+            stars += amount;
+            updateHUD();
+            const msg = document.getElementById('room-msg');
+            msg.innerText = "Incrível! Você ganhou " + amount + " corações! ✨";
+            msg.style.color = "var(--teal)";
+        }
+
+        // Drag and Drop Logic
+        function allowDrop(ev) { ev.preventDefault(); }
+        function drag(ev) { ev.dataTransfer.setData("text", ev.target.id); }
+        function drop(ev) {
+            ev.preventDefault();
+            var data = ev.dataTransfer.getData("text");
+            ev.target.innerHTML = "";
+            ev.target.appendChild(document.getElementById(data));
+            reward(5);
+        }
+
+        // Calm Zone Logic
+        let calmInterval;
+        document.getElementById('calm-btn').onclick = function() {
+            screens.city.classList.remove('active');
+            screens.room.classList.remove('active');
+            screens.calm.classList.add('active');
+            
+            const respira = document.getElementById('respira');
+            let expanding = true;
+            
+            calmInterval = setInterval(() => {
+                if(expanding) {
+                    respira.innerText = "RESPIRE...";
+                    respira.classList.add('respira-expand');
+                } else {
+                    respira.innerText = "SOLTE...";
+                    respira.classList.remove('respira-expand');
+                }
+                expanding = !expanding;
+            }, 4000);
+        };
+
+        function hideCalm() {
+            clearInterval(calmInterval);
+            screens.calm.classList.remove('active');
+            screens.city.classList.add('active');
+        }
+
+        // Init
+        updateHUD();
+
+    </script>
+</body>
+</html>
