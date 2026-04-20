@@ -8,16 +8,23 @@ interface UserProfile {
 }
 
 interface WorldState {
-  currentZone: 'city' | 'home' | 'school' | 'clinic' | 'park';
+  currentZone: 'city' | 'home' | 'school' | 'clinic' | 'park' | 'bedroom' | 'bathroom';
   avatarPosition: THREE.Vector3;
   avatarInput: { x: number; y: number };
   userProfile: UserProfile;
   emergencyMode: boolean;
-  magicHearts: number; // Novo: Recompensas sociais
-  isSocialModeActive: boolean; // Novo: Interação ativa
-  socialInteractionStartTime: number | null; // Novo: Para telemetria
-  isCooperating: boolean; // Novo: Modo siga o líder/cooperação
-  setZone: (zone: 'city' | 'home' | 'school' | 'clinic' | 'park') => void;
+  magicHearts: number;
+  isSocialModeActive: boolean;
+  socialInteractionStartTime: number | null;
+  isCooperating: boolean;
+  
+  // Missão: Manhã de Herói
+  currentMissionStep: 'none' | 'wake_up' | 'get_dressed' | 'brush_teeth' | 'completed';
+  isAlarmPlaying: boolean;
+  clothesChoice: 'cotton' | 'wool' | 'mesh' | null;
+  teethCleanedCount: number;
+
+  setZone: (zone: 'city' | 'home' | 'school' | 'clinic' | 'park' | 'bedroom' | 'bathroom') => void;
   setAvatarPosition: (position: THREE.Vector3) => void;
   setAvatarInput: (input: { x: number; y: number }) => void;
   upgradeToVip: () => void;
@@ -26,10 +33,14 @@ interface WorldState {
   setSocialMode: (active: boolean) => void;
   startSocialInteraction: () => void;
   setCooperating: (active: boolean) => void;
+  setMissionStep: (step: 'none' | 'wake_up' | 'get_dressed' | 'brush_teeth' | 'completed') => void;
+  toggleAlarm: (active: boolean) => void;
+  setClothesChoice: (choice: 'cotton' | 'wool' | 'mesh') => void;
+  cleanTooth: () => void;
 }
 
 export const useWorldStore = create<WorldState>((set) => ({
-  currentZone: 'city',
+  currentZone: 'bedroom', // Inicia no quarto para a missão
   avatarPosition: new THREE.Vector3(0, 0, 0),
   avatarInput: { x: 0, y: 0 },
   userProfile: {
@@ -42,6 +53,10 @@ export const useWorldStore = create<WorldState>((set) => ({
   isSocialModeActive: false,
   socialInteractionStartTime: null,
   isCooperating: false,
+  currentMissionStep: 'wake_up',
+  isAlarmPlaying: true,
+  clothesChoice: null,
+  teethCleanedCount: 0,
   setZone: (zone) => set({ currentZone: zone }),
   setAvatarPosition: (position) => set({ avatarPosition: position }),
   setAvatarInput: (avatarInput) => set({ avatarInput }),
@@ -51,4 +66,8 @@ export const useWorldStore = create<WorldState>((set) => ({
   setSocialMode: (active) => set({ isSocialModeActive: active }),
   startSocialInteraction: () => set({ socialInteractionStartTime: Date.now() }),
   setCooperating: (active) => set({ isCooperating: active }),
+  setMissionStep: (step) => set({ currentMissionStep: step }),
+  toggleAlarm: (active) => set({ isAlarmPlaying: active }),
+  setClothesChoice: (choice) => set({ clothesChoice: choice }),
+  cleanTooth: () => set((state) => ({ teethCleanedCount: state.teethCleanedCount + 1 })),
 }));

@@ -15,10 +15,11 @@ import { TransitionOverlay } from './UI/TransitionOverlay';
 import { VirtualControls } from './UI/VirtualControls';
 import { CalmBubble } from './World/CalmBubble';
 import { SocialInteractionUI } from './UI/SocialInteractionUI';
+import { MissionUI } from './UI/MissionUI';
 
 export const MetaverseHub: React.FC = () => {
     const store = useMemo(() => createXRStore(), []);
-    const { currentZone, emergencyMode, setEmergencyMode, magicHearts } = useWorldStore();
+    const { currentZone, emergencyMode, setEmergencyMode, magicHearts, currentMissionStep } = useWorldStore();
 
     const handleAvatarMove = (input: { x: number; y: number }) => {
         // Envia input para o avatar via store ou ref (implementaremos no avatar)
@@ -28,6 +29,7 @@ export const MetaverseHub: React.FC = () => {
     return (
         <div className="relative w-full h-screen overflow-hidden bg-black">
             <TransitionOverlay />
+            <MissionUI />
             
             {/* Stats Overlay Minimal */}
             <div className="absolute top-4 right-4 z-50 flex items-center gap-4 bg-white/10 backdrop-blur rounded-full px-6 py-2 border border-white/20">
@@ -56,12 +58,16 @@ export const MetaverseHub: React.FC = () => {
                 <Physics>
                     <XR store={store}>
                         {/* Mundo */}
-                        <ambientLight intensity={emergencyMode ? 0.2 : 0.8} />
-                        <directionalLight position={[10, 15, 10]} intensity={emergencyMode ? 0.1 : 0.5} castShadow />
+                        <ambientLight intensity={emergencyMode ? 0.2 : (currentMissionStep !== 'none' ? 1.2 : 0.8)} />
+                        <directionalLight 
+                            position={[10, 15, 10]} 
+                            intensity={currentMissionStep === 'wake_up' ? 2 : (emergencyMode ? 0.1 : 0.5)} 
+                            castShadow 
+                        />
                         
                         <Environment preset={emergencyMode ? "night" : "sunset"} />
                         
-                        <CityEnvironment />
+                        {(currentZone === 'city' || currentZone === 'bedroom' || currentZone === 'bathroom') && <CityEnvironment />}
                         
                         {/* Protagonistas */}
                         <CartoonAvatar userId="Theo" isLocal />
