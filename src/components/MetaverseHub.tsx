@@ -35,7 +35,13 @@ export const MetaverseHub: React.FC = () => {
 
           {/* Instanciação Dinâmica dos NPCs */}
           {currentZone === 'school' && (
-            <NPC definition={npcRegistry.clara} position={[20, 0, 0]} modelUrl="/models/clara.glb" />
+            <>
+              <NPC definition={npcRegistry.clara} position={[3, 0, 0]} modelUrl="/models/clara.glb" />
+              <DigitalWhiteboard 
+                position={[0, 4, -4]} 
+                content="Olá! Vamos aprender sobre emoções hoje? Escolha um cartão." 
+              />
+            </>
           )}
 
           {currentZone === 'clinic' && (
