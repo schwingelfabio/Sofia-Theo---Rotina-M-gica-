@@ -82,7 +82,7 @@ export const MetaverseHub: React.FC = () => {
                             <NPC 
                                 definition={npcRegistry.sofia} 
                                 position={[2, 0, 0]} 
-                                modelUrl="https://models.readyplayer.me/64dbfb9d636c0a0d6ed20e2e.glb" 
+                                modelUrl="https://raw.githubusercontent.com/mrdoob/three.js/master/examples/models/gltf/RobotExpressive/RobotExpressive.glb" 
                             />
                         )}
 

@@ -132,8 +132,19 @@ export const CartoonAvatar: React.FC<AvatarProps> = ({ userId, isLocal, user }) 
                     <meshStandardMaterial color={color} />
                 </mesh>
             )}
-            <Suspense fallback={<group><mesh><capsuleGeometry args={[0.5, 1.5, 4, 8]} /><meshStandardMaterial color="#FF69B4" /></mesh></group>}>
-                <Clone object={useGLTF('https://models.readyplayer.me/64dbfb8d636c0a0d6ed20e1b.glb', true).scene} scale={1.5} />
+            <Suspense fallback={
+                <group>
+                    <mesh position={[0, 0.75, 0]}>
+                        <capsuleGeometry args={[0.4, 1.0, 4, 8]} />
+                        <meshStandardMaterial color={isLocal ? "#22d3ee" : "#a855f7"} emissive={isLocal ? "#22d3ee" : "#a855f7"} emissiveIntensity={0.5} />
+                    </mesh>
+                    <mesh position={[0, 1.6, 0]}>
+                        <sphereGeometry args={[0.25]} />
+                        <meshStandardMaterial color="#ffffff" />
+                    </mesh>
+                </group>
+            }>
+                <Clone object={useGLTF('https://raw.githubusercontent.com/mrdoob/three.js/master/examples/models/gltf/Xbot.glb', true).scene} scale={1.5} />
             </Suspense>
             <Text position={[0, 1.5, 0]} fontSize={0.5} color="black">
                 {userId.slice(0, 5)}
