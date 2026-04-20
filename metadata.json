@@ -1,5 +1,5 @@
 {
-  "name": "Sofia & Theo: The Neuro-Sync Spatial Engine",
-  "description": "Engenharia Espacial Educacional (WebXR): Ambiente Terapêutico Generativo (IA: Gemini 1.5 Pro) para desenvolvimento neurodivergente.",
+  "name": "Sofia & Theo: Rotina Mágica",
+  "description": "Um mundo virtual acolhedor e inclusivo para crianças com TEA, focado em rotinas diárias, regulação emocional e desenvolvimento social com Sofia e Theo.",
   "requestFramePermissions": ["camera", "microphone"]
 }

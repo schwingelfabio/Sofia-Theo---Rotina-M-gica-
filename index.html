@@ -11,6 +11,7 @@
             --warm-yellow: #FFFACD;
             --text-dark: #4A4A4A;
             --white: #FFFFFF;
+            --neon-blue: #00F2FF;
         }
 
         * {
@@ -45,205 +46,166 @@
             background-position: center;
         }
 
-        .screen.active {
-            display: flex;
+        #city-screen {
+            background: linear-gradient(to bottom, #87CEEB 0%, #E0F7FA 100%);
+            overflow: hidden;
+        }
+
+        /* Elementos Flutuantes Mágicos */
+        .magic-item {
+            position: absolute;
+            pointer-events: none;
+            z-index: 5;
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1));
+            animation: moveSlow 10s infinite linear;
+        }
+
+        @keyframes moveSlow {
+            from { transform: translate(0, 0) rotate(0deg); }
+            to { transform: translate(50px, 50px) rotate(360deg); }
         }
 
         /* HUD */
         #hud {
             position: fixed;
-            top: 20px;
-            right: 20px;
-            background: var(--white);
-            padding: 10px 20px;
-            border-radius: 30px;
-            font-size: 24px;
+            top: 25px;
+            right: 25px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 12px 25px;
+            border-radius: 40px;
+            font-size: 26px;
             font-weight: bold;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
             z-index: 1000;
-            border: 3px solid var(--teal);
+            border: 4px solid var(--teal);
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
+            backdrop-filter: blur(10px);
         }
 
         #calm-btn {
             position: fixed;
-            bottom: 20px;
-            right: 20px;
-            width: 80px;
-            height: 80px;
+            bottom: 30px;
+            right: 30px;
+            width: 90px;
+            height: 90px;
             background: var(--white);
             border-radius: 50%;
-            border: 4px solid var(--soft-pink);
+            border: 5px solid var(--soft-pink);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 40px;
+            font-size: 45px;
             cursor: pointer;
             z-index: 1000;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 10px 25px rgba(255, 182, 193, 0.4);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
-        /* Cidade */
-        #city-screen {
-            background: linear-gradient(to bottom, #87CEEB, var(--warm-yellow));
-            position: relative;
-        }
+        #calm-btn:active { transform: scale(0.9); }
 
+        /* Edifícios Estilizados */
         .building {
             position: absolute;
             cursor: pointer;
-            transition: transform 0.3s;
             text-align: center;
+            z-index: 10;
+            transition: filter 0.3s, transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
-        .building:hover { transform: scale(1.05); }
+        .building:hover { transform: scale(1.1) rotate(2deg); filter: brightness(1.1); }
 
         .building img {
-            width: 150px;
-            height: auto;
-            display: block;
-            margin: 0 auto;
+            width: 180px;
+            border-radius: 30px;
+            border: 6px solid var(--white);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
         }
 
         .building span {
-            background: var(--white);
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-weight: bold;
-            font-size: 18px;
-            border: 2px solid var(--teal);
-            margin-top: 5px;
-            display: inline-block;
-        }
-
-        /* Cena Interna */
-        .interior {
-            background-color: var(--white);
-            padding: 20px;
-            width: 100%;
-            height: 100%;
-        }
-
-        .back-btn {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            padding: 15px 30px;
-            background: var(--soft-pink);
-            border-radius: 30px;
-            font-weight: bold;
+            background: rgba(255,255,255,0.95);
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-weight: 800;
             font-size: 20px;
-            border: none;
-            color: white;
-            cursor: pointer;
+            color: var(--text-dark);
+            border: 3px solid var(--teal);
+            margin-top: 10px;
+            display: inline-block;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
         }
 
-        /* Personagens */
+        /* Personagens e Balões */
         .character-guide {
             position: absolute;
-            bottom: 20px;
+            bottom: 10px;
             left: 20px;
-            width: 250px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            z-index: 20;
+            pointer-events: none;
         }
 
         .bubble {
             background: white;
-            padding: 15px;
-            border-radius: 20px;
-            margin-bottom: 10px;
-            border: 2px solid var(--teal);
-            font-size: 18px;
+            padding: 20px 30px;
+            border-radius: 35px;
+            margin-bottom: 5px;
+            border: 4px solid var(--teal);
+            font-size: 22px;
+            font-weight: bold;
+            color: var(--text-dark);
+            max-width: 350px;
+            line-height: 1.4;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.1);
             position: relative;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
 
-        /* Atividade de Arrastar */
-        .drag-container {
-            display: flex;
-            gap: 20px;
-            margin-top: 50px;
-            flex-wrap: wrap;
-            justify-content: center;
+        .bubble::after {
+            content: '';
+            position: absolute;
+            bottom: -20px;
+            left: 40px;
+            border-width: 20px 20px 0;
+            border-style: solid;
+            border-color: var(--teal) transparent transparent;
         }
 
-        .card {
-            width: 120px;
-            height: 150px;
-            background: var(--warm-yellow);
-            border: 3px solid var(--teal);
-            border-radius: 15px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            cursor: grab;
-            font-weight: bold;
-            text-align: center;
-            padding: 10px;
-        }
-
-        .drop-zone {
-            width: 140px;
-            height: 170px;
-            border: 3px dashed #ccc;
-            border-radius: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-top: 30px;
-        }
-
-        /* Respiração */
-        #respira {
-            font-size: 40px;
-            font-weight: bold;
-            color: var(--teal);
-            transition: transform 4s ease-in-out;
-        }
-
-        .respira-expand { transform: scale(2.5); }
-
-        /* Botões Grandes */
-        .big-btn {
-            padding: 20px 40px;
-            font-size: 28px;
-            border-radius: 50px;
-            background: var(--teal);
-            color: white;
-            border: none;
-            margin: 10px;
-            cursor: pointer;
-            box-shadow: 0 6px 15px rgba(0,0,0,0.1);
-        }
-
-        @keyframes float {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
-            100% { transform: translateY(0px); }
-        }
-
+        /* Animações Pixar Style */
         @keyframes welcomeIn {
-            from {
-                opacity: 0;
-                transform: scale(0.95);
-            }
-            to {
-                opacity: 1;
-                transform: scale(1);
-            }
+            from { opacity: 0; transform: scale(0.8) translateY(50px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
         }
 
         #city-screen.active {
             display: flex;
-            animation: welcomeIn 1.2s ease-out forwards;
+            animation: welcomeIn 1s cubic-bezier(0.22, 1, 0.36, 1) forwards;
         }
 
-        .animate-float { animation: float 3s infinite ease-in-out; }
+        @keyframes float {
+            0% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-15px) rotate(1deg); }
+            100% { transform: translateY(0px) rotate(0deg); }
+        }
+
+        .animate-float { animation: float 4s infinite ease-in-out; }
+
+        /* Botões Grandes e Coloridos */
+        .big-btn {
+            padding: 25px 50px;
+            font-size: 32px;
+            border-radius: 60px;
+            background: linear-gradient(135deg, var(--teal), #00BFA5);
+            color: white;
+            border: none;
+            margin: 15px;
+            cursor: pointer;
+            box-shadow: 0 12px 25px rgba(64, 224, 208, 0.4);
+            transition: all 0.2s;
+            font-weight: 900;
+            letter-spacing: 1px;
+        }
+
+        .big-btn:active { transform: translateY(4px); box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
 
     </style>
 </head>
@@ -254,31 +216,49 @@
 
     <!-- Tela Inicial / Cidade -->
     <div id="city-screen" class="screen active">
-        <h1 style="position:absolute; top:40px; font-size:36px; color:var(--text-dark); text-shadow: 2px 2px white;">Sofia & Theo: Rotina Mágica</h1>
-        
-        <div class="building" style="top: 50%; left: 15%;" onclick="loadRoom('casa')">
-            <img src="https://picsum.photos/seed/house/300/300" alt="Casa" referrerPolicy="no-referrer" style="border-radius:20px; border:5px solid var(--soft-pink);">
-            <span>Minha Casa</span>
+        <!-- Elementos Mágicos Flutuantes -->
+        <div class="magic-item" style="top:10%; left:5%; font-size:40px;">🧩</div>
+        <div class="magic-item" style="top:15%; right:10%; font-size:35px; animation-delay: -2s;">💖</div>
+        <div class="magic-item" style="bottom:20%; left:15%; font-size:30px; animation-delay: -5s;">🧩</div>
+        <div class="magic-item" style="bottom:25%; right:8%; font-size:38px; animation-delay: -3s;">💖</div>
+        <div class="magic-item" style="top:40%; right:20%; font-size:25px; animation-delay: -7s;">✨</div>
+
+        <div style="z-index: 50; text-align:center; position:absolute; top:40px; width:100%;">
+            <h1 style="margin:0; font-size:48px; color:var(--text-dark); text-shadow: 3px 3px 0 white, -1px -1px 0 white, 1px -1px 0 white, -1px 1px 0 white; font-family: 'Comic Sans MS', cursive;">Sofia & Theo</h1>
+            <div style="font-size:32px; background:var(--white); display:inline-block; padding:5px 25px; border-radius:30px; border:4px solid var(--soft-pink); margin-top:-10px; font-weight:bold;">Rotina Mágica</div>
         </div>
 
-        <div class="building" style="top: 30%; left: 45%;" onclick="loadRoom('escola')">
-            <img src="https://picsum.photos/seed/school/300/300" alt="Escola" referrerPolicy="no-referrer" style="border-radius:20px; border:5px solid var(--teal);">
-            <span>Escola Amiga</span>
+        <!-- Edifícios ao Redor -->
+        <div class="building" style="top: 22%; left: 18%;" onclick="loadRoom('casa')">
+            <img src="https://picsum.photos/seed/home_pink/400/400" alt="Casa" referrerPolicy="no-referrer" style="border-color: var(--soft-pink);">
+            <br><span>Minha Casa</span>
         </div>
 
-        <div class="building" style="top: 60%; left: 55%;" onclick="loadRoom('parque')">
-            <img src="https://picsum.photos/seed/park/300/300" alt="Parque" referrerPolicy="no-referrer" style="border-radius:20px; border:5px solid #90EE90;">
-            <span>Parquinho</span>
+        <div class="building" style="top: 18%; right: 18%;" onclick="loadRoom('consultorio')">
+            <img src="https://picsum.photos/seed/clinic_ai/400/400" alt="Consultório" referrerPolicy="no-referrer" style="border-color: #ADD8E6;">
+            <br><span>Neuro-Conecta AI</span>
         </div>
 
-        <div class="building" style="top: 45%; left: 75%;" onclick="loadRoom('consultorio')">
-            <img src="https://picsum.photos/seed/clinic/300/300" alt="Consultório" referrerPolicy="no-referrer" style="border-radius:20px; border:5px solid #ADD8E6;">
-            <span>Neuro-Conecta AI</span>
+        <div class="building" style="bottom: 35%; left: 12%;" onclick="loadRoom('escola')">
+            <img src="https://picsum.photos/seed/school_teal/400/400" alt="Escola" referrerPolicy="no-referrer" style="border-color: var(--teal);">
+            <br><span>Escola Amiga</span>
         </div>
 
-        <div class="character-guide">
-            <div class="bubble animate-float" id="city-msg">Olá! Vamos escolher um lugar para brincar hoje?</div>
-            <img src="https://ais-pre-vmd6mdvcvg7pcqhqzwjlam-155588884904.us-east1.run.app/assets/sofia_avatar.png" id="guide-img" style="width:150px; filter: drop-shadow(0 5px 15px rgba(0,0,0,0.2));" onerror="this.src='https://picsum.photos/seed/girl/200/200'">
+        <div class="building" style="bottom: 30%; right: 12%;" onclick="loadRoom('parque')">
+            <img src="https://picsum.photos/seed/playful_park/400/400" alt="Parque" referrerPolicy="no-referrer" style="border-color: #90EE90;">
+            <br><span>Parquinho</span>
+        </div>
+
+        <!-- Sofia & Theo no Centro (Interactive) -->
+        <div id="central-actors" class="animate-float" style="position:absolute; bottom:15%; left:50%; transform:translateX(-50%); display:flex; align-items:flex-end; gap:20px; z-index:100; cursor:pointer;" onclick="centralGreeting()">
+            <img src="https://ais-pre-vmd6mdvcvg7pcqhqzwjlam-155588884904.us-east1.run.app/assets/sofia_avatar.png" style="width:180px; filter: drop-shadow(0 10px 20px rgba(0,0,0,0.2));" onerror="this.src='https://picsum.photos/seed/sofia/300/400'">
+            <img src="https://ais-pre-vmd6mdvcvg7pcqhqzwjlam-155588884904.us-east1.run.app/assets/theo_avatar.png" style="width:160px; filter: drop-shadow(0 10px 20px rgba(0,0,0,0.2));" onerror="this.src='https://picsum.photos/seed/theo/300/400'">
+        </div>
+
+        <div class="character-guide" style="width:100%; bottom:60px; left:0;">
+            <div id="city-msg-container" style="display:flex; justify-content:center; width:100%;">
+                <div class="bubble animate-float" id="city-msg" style="text-align:center;">Escolha um lugar para brincar hoje! ✨</div>
+            </div>
         </div>
     </div>
 
@@ -363,6 +343,18 @@
                     </div>
                 `;
             }
+        }
+
+        function centralGreeting() {
+            const msg = document.getElementById('city-msg');
+            const greetings = [
+                "Oi! Eu sou a Sofia. Vamos brilhar juntos? 💖",
+                "Olá! Eu sou o Theo. Adoro aventuras! 🍎",
+                "Você é incrível! Onde vamos agora? ✨",
+                "Sinto muita alegria em brincar com você! 😊"
+            ];
+            msg.innerText = greetings[Math.floor(Math.random() * greetings.length)];
+            reward(1);
         }
 
         function talkToDoctor() {
