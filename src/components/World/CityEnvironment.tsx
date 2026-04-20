@@ -1,21 +1,21 @@
 import React from 'react';
-import { Grid, Box, Cylinder } from '@react-three/drei';
+import { Grid, Box, Cylinder, Sphere } from '@react-three/drei';
 import { InteractiveZone } from './InteractiveZone';
 
-const HolographicBuilding: React.FC<{ position: [number, number, number], size: [number, number, number] }> = ({ position, size }) => (
+const SoftBuilding: React.FC<{ position: [number, number, number], size: [number, number, number], color?: string }> = ({ position, size, color = "#e0f2f1" }) => (
   <group position={position}>
     <Box args={size}>
       <meshStandardMaterial 
-        color="#0e7490" 
+        color={color}
+        roughness={0.8}
+        metalness={0.1}
         transparent 
-        opacity={0.15} 
-        emissive="#22d3ee" 
-        emissiveIntensity={0.2} 
+        opacity={0.9}
       />
     </Box>
-    {/* Wireframe Glow edges */}
-    <Box args={size}>
-      <meshBasicMaterial color="#22d3ee" wireframe transparent opacity={0.3} />
+    {/* Subtle Glow edges */}
+    <Box args={[size[0] + 0.05, size[1] + 0.05, size[2] + 0.05]}>
+      <meshBasicMaterial color={color} wireframe transparent opacity={0.1} />
     </Box>
   </group>
 );
@@ -23,38 +23,44 @@ const HolographicBuilding: React.FC<{ position: [number, number, number], size: 
 export const CityEnvironment: React.FC = () => {
   return (
     <>
-      {/* Grid Floor AAA */}
+      {/* Soft Ground AAA */}
       <Grid 
         infiniteGrid 
-        fadeDistance={50} 
-        fadeStrength={5} 
-        cellSize={1} 
-        sectionSize={5} 
-        sectionColor="#22d3ee" 
-        sectionThickness={1.5} 
-        cellColor="#0e7490" 
-        cellThickness={0.8}
+        fadeDistance={60} 
+        fadeStrength={3} 
+        cellSize={2} 
+        sectionSize={10} 
+        sectionColor="#80deea" 
+        sectionThickness={1} 
+        cellColor="#e0f2f1" 
+        cellThickness={0.5}
       />
       
-      {/* City Structures */}
-      <HolographicBuilding position={[15, 10, -15]} size={[10, 20, 10]} />
-      <HolographicBuilding position={[-20, 8, -10]} size={[8, 16, 8]} />
-      <HolographicBuilding position={[25, 12, 20]} size={[12, 24, 12]} />
-      <HolographicBuilding position={[-15, 5, 25]} size={[6, 10, 6]} />
+      {/* City Structures in Soft-Realism */}
+      <SoftBuilding position={[20, 15, -20]} size={[12, 30, 12]} color="#b2dfdb" />
+      <SoftBuilding position={[-25, 10, -15]} size={[10, 20, 10]} color="#eceff1" />
+      <SoftBuilding position={[30, 12, 25]} size={[15, 24, 15]} color="#cfd8dc" />
+      <SoftBuilding position={[-18, 5, 30]} size={[8, 10, 8]} color="#b2ebf2" />
 
-      {/* Central Plaza Ornament */}
-      <group position={[0, 0.5, 0]}>
-        <Cylinder args={[5, 5, 0.2, 32]}>
-          <meshStandardMaterial color="#22d3ee" emissive="#22d3ee" emissiveIntensity={1} />
-        </Cylinder>
-        <pointLight color="#22d3ee" intensity={10} distance={15} />
+      {/* Central Plaza Therapeutic Float */}
+      <group position={[0, 1.5, 0]}>
+        <Sphere args={[4, 32, 32]}>
+          <meshStandardMaterial 
+            color="#80deea" 
+            emissive="#80deea" 
+            emissiveIntensity={0.5} 
+            transparent 
+            opacity={0.2}
+          />
+        </Sphere>
+        <pointLight color="#80deea" intensity={5} distance={20} decay={2} />
       </group>
 
-      {/* Zonas Interativas Reformuladas (Portais Holográficos) */}
-      <InteractiveZone position={[15, 2, -15]} targetZone="school" label="iniciar Protocolo Educativo" color="#f59e0b" />
-      <InteractiveZone position={[-20, 2, -10]} externalUrl="https://www.conectateaia.com.br" label="sincronizar Telemedicina" color="#06b6d4" />
-      <InteractiveZone position={[0, 2, 8]} targetZone="home" label="retornar à Safe Zone" color="#fbbf24" />
-      <InteractiveZone position={[0, 0.5, -25]} targetZone="park" label="ativar Regulação Social" color="#10b981" size={[15, 1, 15]} />
+      {/* Portais Terapêuticos Integrados */}
+      <InteractiveZone position={[20, 2, -20]} targetZone="school" label="Exploração Educativa" color="#80deea" />
+      <InteractiveZone position={[-25, 2, -15]} externalUrl="https://www.conectateaia.com.br" label="Conexão Clínica" color="#b2dfdb" />
+      <InteractiveZone position={[0, 2, 10]} targetZone="home" label="Espaço Seguro" color="#e0f2f1" />
+      <InteractiveZone position={[0, 0.5, -30]} targetZone="park" label="Regulação Social" color="#b2ebf2" size={[20, 1, 20]} />
     </>
   );
 };
