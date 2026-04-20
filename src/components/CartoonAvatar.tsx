@@ -52,8 +52,17 @@ export const CartoonAvatar: React.FC<AvatarProps> = ({ userId, isLocal }) => {
             true
         );
 
+import { logMovement } from '../services/analyticsService';
+
+// ... dentro do useFrame do CartoonAvatar:
         // Atualiza Store de Mundo
-        useWorldStore.getState().setAvatarPosition(meshRef.current.position.clone());
+        const pos = meshRef.current.position.clone();
+        useWorldStore.getState().setAvatarPosition(pos);
+        
+        // Telemetria (sampling a cada 100 frames para performance AAA)
+        if (state.frame % 100 === 0) {
+            logMovement({ x: pos.x, y: pos.y, z: pos.z }, 'me');
+        }
     }
   });
 
