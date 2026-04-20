@@ -37,8 +37,29 @@ export const CartoonAvatar: React.FC<AvatarProps> = ({ userId, isLocal }) => {
     };
   }, [isLocal]);
 
+  const { isSocialModeActive, magicHearts } = useWorldStore();
+  const [showSparks, setShowSparks] = useState(false);
+  const lastHearts = useRef(magicHearts);
+
+  // Efeito de Faíscas quando ganha corações
+  useEffect(() => {
+    if (magicHearts > lastHearts.current) {
+        setShowSparks(true);
+        setTimeout(() => setShowSparks(false), 2000);
+    }
+    lastHearts.current = magicHearts;
+  }, [magicHearts]);
+
   useFrame((state, delta) => {
     if (isLocal && meshRef.current) {
+        // Bloqueia movimento se estiver no modo social
+        if (isSocialModeActive) {
+            // Olha para Sofia (NPC em [2,0,0])
+            const sofiaPos = new THREE.Vector3(2, 0, 0);
+            meshRef.current.lookAt(sofiaPos.x, meshRef.current.position.y, sofiaPos.z);
+            return;
+        }
+
         const speed = 7; // GTA style speed
         const input = useWorldStore.getState().avatarInput;
         
@@ -86,6 +107,24 @@ export const CartoonAvatar: React.FC<AvatarProps> = ({ userId, isLocal }) => {
     <>
         <CameraControls ref={cameraControlsRef} />
         <group ref={meshRef}>
+            {/* Efeito de Faíscas AAA */}
+            {showSparks && (
+                <group position={[0, 1, 0]}>
+                    <mesh position={[0.5, 0.5, 0]}>
+                        <sphereGeometry args={[0.1]} />
+                        <meshStandardMaterial color="yellow" emissive="yellow" emissiveIntensity={2} />
+                    </mesh>
+                    <mesh position={[-0.5, 0.8, 0.2]}>
+                        <sphereGeometry args={[0.1]} />
+                        <meshStandardMaterial color="cyan" emissive="cyan" emissiveIntensity={2} />
+                    </mesh>
+                    <mesh position={[0, 1.2, -0.4]}>
+                        <sphereGeometry args={[0.05]} />
+                        <meshStandardMaterial color="magenta" emissive="magenta" emissiveIntensity={2} />
+                    </mesh>
+                </group>
+            )}
+
             {/* Renderiza o item escolhido se mode !== 'walk' */}
             {mode !== 'walk' && (
                 <mesh position={[0, -0.5, 0]}>

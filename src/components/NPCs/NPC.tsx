@@ -15,7 +15,43 @@ export const NPC: React.FC<NPCProps> = ({ definition, position, modelUrl }) => {
   const groupRef = useRef<THREE.Group>(null);
   const { scene, animations } = useGLTF(modelUrl);
   const { actions } = useAnimations(animations, groupRef);
-  const { userProfile } = useWorldStore();
+  const { userProfile, avatarPosition, setSocialMode, startSocialInteraction, isSocialModeActive, isCooperating } = useWorldStore();
+
+  useFrame((state) => {
+    if (!groupRef.current) return;
+
+    // 1. Proximidade Social (2 metros)
+    const distance = groupRef.current.position.distanceTo(avatarPosition);
+    if (!isSocialModeActive && !isCooperating && distance < 2) {
+        setSocialMode(true);
+        startSocialInteraction();
+        
+        // Dispara aceno
+        if (actions && actions['Wave']) {
+            actions['Wave'].reset().fadeIn(0.5).play();
+        }
+    }
+
+    // 2. Cooperação: Siga o líder para o parquinho
+    if (isCooperating) {
+        const parkTarget = new THREE.Vector3(0, 0, -50); // Coordenada fictícia do parquinho
+        const moveDir = parkTarget.clone().sub(groupRef.current.position).normalize();
+        
+        if (groupRef.current.position.distanceTo(parkTarget) > 1) {
+            groupRef.current.position.add(moveDir.multiplyScalar(0.1));
+            groupRef.current.lookAt(parkTarget);
+            
+            if (actions && actions['Walk']) {
+                actions['Walk'].play();
+            }
+        } else {
+            // Chegou no parquinho - Tarefa Conjunta
+            if (actions && actions['Interaction']) {
+                actions['Interaction'].play();
+            }
+        }
+    }
+  });
 
   const trialStart = userProfile.trialStartDate ? new Date(userProfile.trialStartDate).getTime() : 0;
   const remainingTrialDays = Math.max(0, 3 - (Date.now() - trialStart) / (1000 * 60 * 60 * 24));

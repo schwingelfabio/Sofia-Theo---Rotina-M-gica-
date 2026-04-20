@@ -14,10 +14,11 @@ import { SpatialHUD } from './UI/SpatialHUD';
 import { TransitionOverlay } from './UI/TransitionOverlay';
 import { VirtualControls } from './UI/VirtualControls';
 import { CalmBubble } from './World/CalmBubble';
+import { SocialInteractionUI } from './UI/SocialInteractionUI';
 
 export const MetaverseHub: React.FC = () => {
     const store = useMemo(() => createXRStore(), []);
-    const { currentZone, emergencyMode, setEmergencyMode } = useWorldStore();
+    const { currentZone, emergencyMode, setEmergencyMode, magicHearts } = useWorldStore();
 
     const handleAvatarMove = (input: { x: number; y: number }) => {
         // Envia input para o avatar via store ou ref (implementaremos no avatar)
@@ -28,6 +29,11 @@ export const MetaverseHub: React.FC = () => {
         <div className="relative w-full h-screen overflow-hidden bg-black">
             <TransitionOverlay />
             
+            {/* Stats Overlay Minimal */}
+            <div className="absolute top-4 right-4 z-50 flex items-center gap-4 bg-white/10 backdrop-blur rounded-full px-6 py-2 border border-white/20">
+                <span className="text-white font-bold">✨ {magicHearts}</span>
+            </div>
+
             {/* Modo de Emergência: Overlay Darken */}
             {emergencyMode && (
                 <div 
@@ -63,17 +69,15 @@ export const MetaverseHub: React.FC = () => {
 
                         {currentZone === 'city' && (
                             <NPC 
-                                definition={{ 
-                                    id: "sofia_guide", 
-                                    name: "Sofia", 
-                                    description: "Guia",
-                                    role: "Guia",
-                                    aiPrompt: "Você é a Sofia, guia do Conecta-Verse."
-                                }} 
+                                definition={npcRegistry.sofia} 
                                 position={[2, 0, 0]} 
                                 modelUrl="/models/sofia.glb" 
                             />
                         )}
+
+                        <group position={[2, 2.5, 0]}>
+                            <SocialInteractionUI />
+                        </group>
 
                         <SpatialHUD />
                     </XR>
