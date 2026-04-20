@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { Environment, PerspectiveCamera, OrbitControls } from '@react-three/drei';
-import { XR, VRButton } from '@react-three/xr';
+import { XR, VRButton, createXRStore } from '@react-three/xr';
 
 interface HubLocation {
   id: string;
@@ -17,11 +17,12 @@ const locations: HubLocation[] = [
 ];
 
 export const MetaverseHub: React.FC = () => {
+  const store = useMemo(() => createXRStore(), []);
   return (
     <>
       <VRButton />
       <Canvas>
-        <XR>
+        <XR store={store}>
           <PerspectiveCamera makeDefault position={[0, 2, 10]} />
           <OrbitControls />
           

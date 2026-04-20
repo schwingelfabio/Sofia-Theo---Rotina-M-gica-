@@ -1,10 +1,40 @@
 import React, { useState } from 'react';
 import { AnalyticsViewer } from '../components/AnalyticsViewer';
 import { jsPDF } from 'jspdf';
-import { LayoutDashboard, Users, MapPin, Activity, FileText, Settings, ShieldAlert } from 'lucide-react';
+import { LayoutDashboard, Users, MapPin, Activity, FileText, Settings, ShieldAlert, BrainCircuit, HeartPulse } from 'lucide-react';
 import { motion } from 'motion/react';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts';
+
+const mockData = [
+  { name: 'Seg', focus: 65, motor: 70 },
+  { name: 'Ter', focus: 75, motor: 80 },
+  { name: 'Qua', focus: 60, motor: 65 },
+  { name: 'Qui', focus: 90, motor: 95 },
+  { name: 'Sex', focus: 85, motor: 90 },
+];
+
+const MetricCard = ({ title, value, icon: Icon, color }: any) => (
+    <div className="bg-slate-900 p-6 rounded-3xl border border-slate-800 flex items-center gap-4">
+        <div className={`p-4 rounded-full ${color} bg-opacity-20`}>
+            <Icon className={color.replace('bg-', 'text-')} size={24} />
+        </div>
+        <div>
+            <p className="text-slate-400 text-sm font-bold uppercase">{title}</p>
+            <p className="text-3xl font-black text-white">{value}</p>
+        </div>
+    </div>
+);
 
 export const SuperAdminDashboard: React.FC = () => {
+    // ... rest of the logic ...
+    
+    // Add inside return:
+    // <div className="grid grid-cols-3 gap-6">
+    //    <MetricCard title="Focus Index" value="88%" icon={BrainCircuit} color="text-indigo-400 bg-indigo-900" />
+    //    <MetricCard title="Motor Accuracy" value="92%" icon={Activity} color="text-emerald-400 bg-emerald-900" />
+    //    <MetricCard title="Sensory Load" value="Normal" icon={HeartPulse} color="text-amber-400 bg-amber-900" />
+    // </div>
+    // ... charts ...
   const [activeTab, setActiveTab] = useState('overview');
 
   const generateReport = () => {
@@ -57,8 +87,37 @@ export const SuperAdminDashboard: React.FC = () => {
         <section className="flex-1 bg-slate-900 p-8 rounded-3xl border border-slate-800 shadow-inner">
           {activeTab === 'overview' && (
             <div className="space-y-6">
-                <AnalyticsViewer />
-                {/* Add more widgets here: Global Map placeholder, predictive gauges */}
+                <div className="grid grid-cols-3 gap-6">
+                   <MetricCard title="Focus Index" value="88%" icon={BrainCircuit} color="bg-indigo-900 text-indigo-400" />
+                   <MetricCard title="Motor Accuracy" value="92%" icon={Activity} color="bg-emerald-900 text-emerald-400" />
+                   <MetricCard title="Sensory Load" value="Normal" icon={HeartPulse} color="bg-amber-900 text-amber-400" />
+                </div>
+                
+                <div className="bg-slate-900 p-6 rounded-3xl border border-slate-800 h-80">
+                    <h3 className="text-xl font-bold mb-4 text-slate-300">Cognitive & Motor Telemetry</h3>
+                    <ResponsiveContainer width="100%" height="100%">
+                        <LineChart data={mockData}>
+                            <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
+                            <XAxis dataKey="name" stroke="#64748b" />
+                            <YAxis stroke="#64748b" />
+                            <Tooltip contentStyle={{backgroundColor: '#0f172a', borderColor: '#334155'}} />
+                            <Line type="monotone" dataKey="focus" stroke="#818cf8" strokeWidth={3} />
+                            <Line type="monotone" dataKey="motor" stroke="#34d399" strokeWidth={3} />
+                        </LineChart>
+                    </ResponsiveContainer>
+                </div>
+
+                <div className="bg-slate-900 p-6 rounded-3xl border border-slate-800">
+                    <h3 className="text-xl font-bold mb-4 text-slate-300">AI Clinical Recommendations</h3>
+                    <div className="space-y-4">
+                        <div className="p-4 bg-indigo-950/30 border border-indigo-900/50 rounded-2xl">
+                            <p className="text-indigo-200">Professor IA: "Sofia showed high precision with block mechanics. Suggest introducing complex puzzles tomorrow."</p>
+                        </div>
+                        <div className="p-4 bg-amber-950/30 border border-amber-900/50 rounded-2xl">
+                            <p className="text-amber-200">Médico IA: "Theo teve aumento de frequência cardíaca no Conecta-Parque. Monitorar sensibilidade auditiva."</p>
+                        </div>
+                    </div>
+                </div>
             </div>
           )}
           {activeTab !== 'overview' && (

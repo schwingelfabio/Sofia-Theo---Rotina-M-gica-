@@ -11,6 +11,6 @@ export function getGeminiModel() {
     }
     ai = new GoogleGenAI({ apiKey });
   }
-  // Utilizando Gemini 1.5 Pro como modelo Sentinel para Sofia
-  return ai.getGenerativeModel({ model: "gemini-1.5-pro" });
+  // Retorna o cliente ai para ser usado com ai.models.generateContent
+  return ai;
 }

@@ -16,7 +16,7 @@ export const agentPrompts: Record<AgentRole, string> = {
 };
 
 export async function interactWithAgent(role: AgentRole, context: any) {
-  const model = ai.getGenerativeModel({ model: "gemini-1.5-pro" });
+  const model = 'gemini-1.5-pro';
   
   const prompt = `${agentPrompts[role]}
   
@@ -25,6 +25,9 @@ export async function interactWithAgent(role: AgentRole, context: any) {
   
   Responda com uma intenção de ação (para o motor do jogo) e uma mensagem empática.`;
 
-  const result = await model.generateContent(prompt);
-  return result.response.text();
+  const result = await ai.models.generateContent({
+    model: model,
+    contents: prompt,
+  });
+  return result.text;
 }
