@@ -17,9 +17,12 @@ import { CalmBubble } from './World/CalmBubble';
 import { SocialInteractionUI } from './UI/SocialInteractionUI';
 import { MissionUI } from './UI/MissionUI';
 import { MissionReport } from './UI/MissionReport';
+import { useAuth } from '../state/AuthContext';
+
+const store = createXRStore();
 
 export const MetaverseHub: React.FC = () => {
-    const store = useMemo(() => createXRStore(), []);
+    const { user } = useAuth();
     const { currentZone, emergencyMode, setEmergencyMode, magicHearts, currentMissionStep } = useWorldStore();
 
     const handleAvatarMove = (input: { x: number; y: number }) => {
@@ -72,7 +75,7 @@ export const MetaverseHub: React.FC = () => {
                         {(currentZone === 'city' || currentZone === 'bedroom' || currentZone === 'bathroom') && <CityEnvironment />}
                         
                         {/* Protagonistas */}
-                        <CartoonAvatar userId="Theo" isLocal />
+                        <CartoonAvatar userId="Theo" isLocal user={user} />
                         <CalmBubble active={emergencyMode} />
 
                         {currentZone === 'city' && (
@@ -84,7 +87,7 @@ export const MetaverseHub: React.FC = () => {
                         )}
 
                         <group position={[2, 2.5, 0]}>
-                            <SocialInteractionUI />
+                            <SocialInteractionUI user={user} />
                         </group>
 
                         <SpatialHUD />

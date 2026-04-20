@@ -11,12 +11,12 @@ import { useWorldStore } from '../state/useWorldStore';
 interface AvatarProps {
   userId: string;
   isLocal: boolean;
+  user: any; // Passado via props para evitar quebra de context no R3F
 }
 
-export const CartoonAvatar: React.FC<AvatarProps> = ({ userId, isLocal }) => {
+export const CartoonAvatar: React.FC<AvatarProps> = ({ userId, isLocal, user }) => {
   const meshRef = useRef<THREE.Group>(null);
   const cameraControlsRef = useRef<any>(null);
-  const { user } = useAuth();
   
   const [mode, setMode] = useState<'walk' | 'skate' | 'scooter'>('walk');
   const [color, setColor] = useState<'pink' | 'blue'>('blue');
@@ -132,8 +132,8 @@ export const CartoonAvatar: React.FC<AvatarProps> = ({ userId, isLocal }) => {
                     <meshStandardMaterial color={color} />
                 </mesh>
             )}
-            <Suspense fallback={<mesh><capsuleGeometry args={[0.5, 1.5, 4, 8]} /><meshStandardMaterial color="#FF69B4" /></mesh>}>
-                <Clone object={useGLTF('/models/theo.glb').scene} scale={1.5} />
+            <Suspense fallback={<group><mesh><capsuleGeometry args={[0.5, 1.5, 4, 8]} /><meshStandardMaterial color="#FF69B4" /></mesh></group>}>
+                <Clone object={useGLTF('/models/theo.glb', true).scene} scale={1.5} />
             </Suspense>
             <Text position={[0, 1.5, 0]} fontSize={0.5} color="black">
                 {userId.slice(0, 5)}

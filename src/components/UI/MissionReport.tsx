@@ -57,62 +57,61 @@ export const MissionReport: React.FC = () => {
     if (currentMissionStep !== 'completed') return null;
 
     return (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-md p-6">
-            <div className="bg-white w-full max-w-lg rounded-[32px] overflow-hidden shadow-2xl flex flex-col max-h-[80vh]">
-                {/* Header Estilizado */}
-                <div className="bg-purple-600 p-8 text-white">
-                    <h1 className="text-2xl font-bold">Relatório de Evolução</h1>
-                    <p className="opacity-80 text-sm">Neuro-Conecta AI | Missão 01</p>
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-3xl p-6">
+            <div className="bg-white/5 w-full max-w-xl rounded-[48px] overflow-hidden shadow-[0_0_150px_rgba(255,255,255,0.05)] border border-white/10 flex flex-col max-h-[90vh] animate-scale-in text-white">
+                {/* Header Holográfico */}
+                <div className="bg-white/10 p-10 border-b border-white/10">
+                    <h1 className="text-3xl font-black tracking-tighter uppercase mb-1">DIAGNÓSTICO: AUTONOMIA</h1>
+                    <p className="opacity-40 text-[10px] font-bold uppercase tracking-[0.3em]">Neuro-Conecta AI | Protocolo Alpha</p>
                 </div>
 
-                {/* Conteúdo Clínico */}
-                <div className="p-8 space-y-6 overflow-y-auto">
-                    <div className="flex justify-between items-center border-b pb-4">
-                        <span className="text-gray-500 font-medium">Avatar: Theo</span>
-                        <span className="bg-green-100 text-green-700 font-bold px-3 py-1 rounded-full text-xs">100% Concluído</span>
+                {/* Conteúdo Clínico Espacial */}
+                <div className="p-10 space-y-8 overflow-y-auto">
+                    <div className="flex justify-between items-center border-b border-white/5 pb-6">
+                        <span className="text-white/40 text-xs font-black uppercase tracking-widest">Sujeito: Theo</span>
+                        <span className="bg-cyan-400 text-black font-black px-4 py-1 rounded-full text-[10px] tracking-widest uppercase">Integridade 100%</span>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-4">
-                        <div className="bg-gray-50 p-4 rounded-2xl">
-                            <p className="text-[10px] text-gray-400 uppercase font-bold tracking-wider">Tempo Total</p>
-                            <p className="text-lg font-bold text-gray-800">4:02 min</p>
+                    <div className="grid grid-cols-2 gap-6">
+                        <div className="bg-white/5 p-6 rounded-[32px] border border-white/5">
+                            <p className="text-[9px] text-white/30 uppercase font-black tracking-[0.2em] mb-2">Ciclo de Resposta</p>
+                            <p className="text-2xl font-black text-white italic">4.02<span className="text-sm not-italic opacity-40 ml-1">MIN</span></p>
                         </div>
-                        <div className="bg-gray-50 p-4 rounded-2xl">
-                            <p className="text-[10px] text-gray-400 uppercase font-bold tracking-wider">Habilidade Motora</p>
-                            <p className="text-lg font-bold text-gray-800">{(teethCleanedCount / 5) * 100}% Precisão</p>
+                        <div className="bg-white/5 p-6 rounded-[32px] border border-white/5">
+                            <p className="text-[9px] text-white/30 uppercase font-black tracking-[0.2em] mb-2">Sincronia Motora</p>
+                            <p className="text-2xl font-black text-white">{(teethCleanedCount / 5) * 100}<span className="text-sm opacity-40 ml-1">%</span></p>
                         </div>
                     </div>
 
-                    <div className="bg-blue-50 p-6 rounded-2xl border-l-4 border-blue-400">
-                        <h3 className="font-bold text-blue-800 mb-2 flex items-center gap-2">
-                             🧠 Insight da IA
+                    <div className="bg-cyan-400/10 p-8 rounded-[32px] border border-cyan-400/20">
+                        <h3 className="font-black text-cyan-400 text-xs uppercase tracking-[0.2em] mb-4 flex items-center gap-3">
+                             <div className="w-2 h-2 bg-cyan-400 rounded-full animate-pulse" /> IA INSIGHT
                         </h3>
-                        <p className="text-sm text-blue-700 leading-relaxed">
-                            O Theo demonstrou preferência por texturas suaves (Algodão), 
-                            evitando sobrecarca tátil. Notamos uma melhora na coordenação olho-mão.
+                        <p className="text-sm text-cyan-400/80 leading-relaxed font-medium">
+                            Preferência por texturas suaves (Algodão) confirmada. 
+                            Curva de aprendizado motora ascendente detectada na escovação.
                         </p>
                     </div>
 
-                    <div className="bg-yellow-50 p-6 rounded-2xl border-l-4 border-yellow-400">
-                        <h3 className="font-bold text-yellow-800 mb-2 flex items-center gap-2">
-                             👥 Orientação Parental
+                    <div className="bg-white/5 p-8 rounded-[32px] border border-white/10">
+                        <h3 className="font-black text-white/60 text-xs uppercase tracking-[0.2em] mb-4">
+                             Protocolo de Extensão
                         </h3>
-                        <p className="text-sm text-yellow-700 leading-relaxed italic">
-                            "Tente usar a mesma música do despertador do jogo no mundo real 
-                            para facilitar a transição."
+                        <p className="text-sm text-white/40 leading-relaxed italic">
+                            "Espelhar frequência sonora do despertador no ambiente doméstico para manter consistência neurais."
                         </p>
                     </div>
                 </div>
 
-                <div className="p-8 pt-0 mt-auto">
+                <div className="p-10 pt-0 mt-auto">
                     <button 
                         onClick={() => window.location.reload()}
-                        className="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-4 rounded-2xl transition-all shadow-xl shadow-purple-200"
+                        className="w-full bg-white text-black font-black py-6 rounded-[24px] transition-all hover:scale-[1.02] shadow-2xl tracking-[0.2em] uppercase text-xs"
                     >
-                        FECHAR E SALVAR RELATÓRIO
+                        TRANSFERIR DADOS E FINALIZAR
                     </button>
-                    <p className="text-center text-[10px] text-gray-400 mt-4">
-                        Enviado para: fabiopalacioschwingel@gmail.com
+                    <p className="text-center text-[9px] text-white/20 mt-6 tracking-widest uppercase">
+                        Link: medical.conectatea.ai | fabio@neuro.connected
                     </p>
                 </div>
             </div>
