@@ -133,7 +133,7 @@ export const CartoonAvatar: React.FC<AvatarProps> = ({ userId, isLocal, user }) 
                 </mesh>
             )}
             <Suspense fallback={<group><mesh><capsuleGeometry args={[0.5, 1.5, 4, 8]} /><meshStandardMaterial color="#FF69B4" /></mesh></group>}>
-                <Clone object={useGLTF('/models/theo.glb', true).scene} scale={1.5} />
+                <Clone object={useGLTF('https://models.readyplayer.me/64dbfb8d636c0a0d6ed20e1b.glb', true).scene} scale={1.5} />
             </Suspense>
             <Text position={[0, 1.5, 0]} fontSize={0.5} color="black">
                 {userId.slice(0, 5)}
