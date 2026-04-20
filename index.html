@@ -12,6 +12,7 @@
             --text-dark: #4A4A4A;
             --white: #FFFFFF;
             --neon-blue: #00F2FF;
+            --sunset-orange: #FF7043;
         }
 
         * {
@@ -46,6 +47,84 @@
             background-position: center;
         }
 
+        /* Tela de Poster (Splash) */
+        #splash-screen {
+            background: linear-gradient(135deg, #FFB74D 0%, #FF8A65 100%);
+            display: flex;
+            z-index: 5000;
+        }
+
+        #splash-screen.active {
+            display: flex;
+        }
+
+        .poster-content {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            padding: 60px 20px;
+            background: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.2) 0%, transparent 70%);
+        }
+
+        .poster-title {
+            text-align: center;
+            z-index: 100;
+        }
+
+        .poster-title h1 {
+            font-size: 64px;
+            margin: 0;
+            color: white;
+            text-shadow: 4px 4px 0px rgba(0,0,0,0.1), 0 0 20px rgba(255,255,255,0.5);
+            font-family: 'Comic Sans MS', cursive;
+        }
+
+        .poster-subtitle {
+            font-size: 28px;
+            color: var(--white);
+            background: rgba(0, 0, 0, 0.15);
+            padding: 10px 30px;
+            border-radius: 40px;
+            margin-top: 10px;
+            backdrop-filter: blur(5px);
+            font-weight: bold;
+        }
+
+        .poster-footer {
+            font-size: 24px;
+            color: white;
+            font-weight: bold;
+            text-align: center;
+            z-index: 100;
+            background: rgba(0,0,0,0.1);
+            padding: 15px 40px;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 3px solid rgba(255, 255, 255, 0.5);
+        }
+
+        .poster-footer:hover {
+            transform: scale(1.1);
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Personagens no Poster */
+        .poster-actors {
+            position: absolute;
+            bottom: 120px;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            gap: 20px;
+            z-index: 50;
+        }
+
         #city-screen {
             background: linear-gradient(to bottom, #87CEEB 0%, #E0F7FA 100%);
             overflow: hidden;
@@ -55,14 +134,26 @@
         .magic-item {
             position: absolute;
             pointer-events: none;
-            z-index: 5;
-            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1));
-            animation: moveSlow 10s infinite linear;
+            z-index: 10;
+            filter: drop-shadow(0 6px 12px rgba(0,0,0,0.2));
+            animation: moveSlow 12s infinite linear;
+        }
+
+        .magic-card {
+            background: white;
+            padding: 10px;
+            border-radius: 10px;
+            border: 2px solid var(--teal);
+            font-size: 14px;
+            font-weight: bold;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
         @keyframes moveSlow {
             from { transform: translate(0, 0) rotate(0deg); }
-            to { transform: translate(50px, 50px) rotate(360deg); }
+            to { transform: translate(60px, 60px) rotate(360deg); }
         }
 
         /* HUD */
@@ -214,8 +305,37 @@
     <div id="hud">💖 <span id="stars">0</span> Corações</div>
     <div id="calm-btn" title="Calm Zone">🧘</div>
 
+    <!-- Tela de Poster / Splash -->
+    <div id="splash-screen" class="screen active">
+        <div class="poster-content">
+            <!-- Elementos Mágicos no Poster -->
+            <div class="magic-item" style="top:10%; left:10%; font-size:50px;">🧩</div>
+            <div class="magic-item" style="bottom:25%; right:15%; font-size:60px; animation-delay:-3s;">💖</div>
+            <div class="magic-item" style="top:15%; right:15%; font-size:45px; animation-delay:-6s;">✨</div>
+            
+            <div class="magic-item magic-card animate-float" style="top:30%; left:12%; animation-duration:5s;">
+                <span style="font-size:30px;">🏠</span>
+                <span>Casa</span>
+            </div>
+
+            <div class="poster-title animate-float" style="margin-top:20px;">
+                <h1>Sofia & Theo</h1>
+                <div class="poster-subtitle">Rotina Mágica</div>
+            </div>
+
+            <div class="poster-actors animate-float">
+                <img src="https://ais-pre-vmd6mdvcvg7pcqhqzwjlam-155588884904.us-east1.run.app/assets/sofia_avatar.png" style="width:230px; filter: drop-shadow(0 20px 40px rgba(0,0,0,0.3));" onerror="this.src='https://picsum.photos/seed/sofia_hd/400/500'">
+                <img src="https://ais-pre-vmd6mdvcvg7pcqhqzwjlam-155588884904.us-east1.run.app/assets/theo_avatar.png" style="width:210px; filter: drop-shadow(0 20px 40px rgba(0,0,0,0.3));" onerror="this.src='https://picsum.photos/seed/theo_hd/400/500'">
+            </div>
+
+            <div class="poster-footer" onclick="startGame()">
+                Escolha um lugar para brincar hoje! ✨
+            </div>
+        </div>
+    </div>
+
     <!-- Tela Inicial / Cidade -->
-    <div id="city-screen" class="screen active">
+    <div id="city-screen" class="screen">
         <!-- Elementos Mágicos Flutuantes -->
         <div class="magic-item" style="top:10%; left:5%; font-size:40px;">🧩</div>
         <div class="magic-item" style="top:15%; right:10%; font-size:35px; animation-delay: -2s;">💖</div>
@@ -284,10 +404,16 @@
     <script>
         let stars = 0;
         const screens = {
+            splash: document.getElementById('splash-screen'),
             city: document.getElementById('city-screen'),
             room: document.getElementById('room-screen'),
             calm: document.getElementById('calm-screen')
         };
+
+        function startGame() {
+            screens.splash.classList.remove('active');
+            screens.city.classList.add('active');
+        }
 
         function updateHUD() {
             document.getElementById('stars').innerText = stars;
