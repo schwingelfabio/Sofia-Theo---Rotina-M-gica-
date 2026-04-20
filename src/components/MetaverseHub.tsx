@@ -39,7 +39,7 @@ export const MetaverseHub: React.FC = () => {
               <NPC definition={npcRegistry.clara} position={[3, 0, 0]} modelUrl="/models/clara.glb" />
               <DigitalWhiteboard 
                 position={[0, 4, -4]} 
-                content="Olá! Vamos aprender sobre emoções hoje? Escolha um cartão." 
+                agentRole="teacher" 
               />
             </>
           )}
