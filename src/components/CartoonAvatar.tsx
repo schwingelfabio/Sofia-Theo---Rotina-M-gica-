@@ -1,7 +1,7 @@
 import * as THREE from 'three';
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect, useState, Suspense } from 'react';
 import { useFrame } from '@react-three/fiber';
-import { useGLTF, Text, CameraControls } from '@react-three/drei';
+import { useGLTF, Text, CameraControls, Clone } from '@react-three/drei';
 import { doc, onSnapshot, updateDoc } from 'firebase/firestore';
 import { db } from '../lib/firebase';
 import { useAuth } from '../state/AuthContext';
@@ -65,9 +65,12 @@ import { logMovement } from '../services/analyticsService';
         const pos = meshRef.current.position.clone();
         useWorldStore.getState().setAvatarPosition(pos);
         
-        // Telemetria (sampling a cada 100 frames para performance AAA)
-        if (state.frame % 100 === 0) {
-            logMovement({ x: pos.x, y: pos.y, z: pos.z }, 'me');
+        // Persistência em tempo real no Firestore
+        if (user && state.frame % 60 === 0) { // A cada 60 frames (1s) para otimizar escrita
+            updateDoc(doc(db, 'users', user.uid), {
+                position: { x: pos.x, y: pos.y, z: pos.z },
+                lastUpdated: new Date()
+            });
         }
     }
   });
@@ -83,10 +86,9 @@ import { logMovement } from '../services/analyticsService';
                     <meshStandardMaterial color={color} />
                 </mesh>
             )}
-            <mesh>
-                <capsuleGeometry args={[0.5, 1.5, 4, 8]} />
-                <meshStandardMaterial color="#FF69B4" />
-            </mesh>
+            <Suspense fallback={<mesh><capsuleGeometry args={[0.5, 1.5, 4, 8]} /><meshStandardMaterial color="#FF69B4" /></mesh>}>
+                <Clone object={useGLTF('/models/theo.glb').scene} scale={1.5} />
+            </Suspense>
             <Text position={[0, 1.5, 0]} fontSize={0.5} color="black">
                 {userId.slice(0, 5)}
             </Text>
