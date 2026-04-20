@@ -37,21 +37,30 @@ export const MetaverseHub: React.FC = () => {
             {/* Céu suave */}
             <Environment preset="sunset" />
 
-            {/* O Mundo Aberto da Cidade */}
+            {/* Cidade Aberta - Tela Inicial Digital */}
             <CityEnvironment />
-            <Swing position={[0, 2, -20]} />
+            <Swing position={[0, 2, -15]} />
 
-            {/* Avatar Local */}
-            <CartoonAvatar userId="me" isLocal />
+            {/* Protagonistas no Centro */}
+            <CartoonAvatar userId="Theo" isLocal />
+            
+            {/* Sofia como NPC Guia no Início */}
+            {currentZone === 'city' && (
+              <NPC 
+                definition={{ name: "Sofia", description: "Sua guia no Conecta-Verse" }} 
+                position={[2, 0, 0]} 
+                modelUrl="/models/sofia.glb" 
+              />
+            )}
 
-            {/* Instanciação Dinâmica dos NPCs */}
+            {/* Spatial HUD Holográfico */}
+            <SpatialHUD />
+
+            {/* Elementos em Zonas Específicas */}
             {currentZone === 'school' && (
               <>
                 <NPC definition={npcRegistry.clara} position={[3, 0, 0]} modelUrl="/models/clara.glb" />
-                <DigitalWhiteboard 
-                  position={[0, 4, -4]} 
-                  agentRole="teacher" 
-                />
+                <DigitalWhiteboard position={[0, 4, -4]} agentRole="teacher" />
               </>
             )}
 
