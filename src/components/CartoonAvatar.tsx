@@ -20,7 +20,6 @@ export const CartoonAvatar: React.FC<AvatarProps> = ({ userId, isLocal }) => {
   
   const [mode, setMode] = useState<'walk' | 'skate' | 'scooter'>('walk');
   const [color, setColor] = useState<'pink' | 'blue'>('blue');
-  // ... resto das definições
   
   // Estado para teclas
   const keys = useRef({ w: false, a: false, s: false, d: false });
@@ -40,33 +39,41 @@ export const CartoonAvatar: React.FC<AvatarProps> = ({ userId, isLocal }) => {
 
   useFrame((state, delta) => {
     if (isLocal && meshRef.current) {
-        const speed = 5;
+        const speed = 7; // GTA style speed
+        const input = useWorldStore.getState().avatarInput;
+        
+        // Teclado (fallback) + Joystick
         const direction = new THREE.Vector3(
-            (keys.current.d ? 1 : 0) - (keys.current.a ? 1 : 0),
+            input.x || (keys.current.d ? 1 : 0) - (keys.current.a ? 1 : 0),
             0,
-            (keys.current.s ? 1 : 0) - (keys.current.w ? 1 : 0)
+            -input.y || (keys.current.s ? 1 : 0) - (keys.current.w ? 1 : 0)
         );
         
-        // Normalizar e mover
-        direction.normalize().multiplyScalar(speed * delta);
-        meshRef.current.position.add(direction);
+        if (direction.length() > 0.1) {
+            direction.normalize().multiplyScalar(speed * delta);
+            meshRef.current.position.add(direction);
+            
+            // Rotação suave baseada na direção
+            const targetRotation = Math.atan2(direction.x, direction.z);
+            meshRef.current.rotation.y = THREE.MathUtils.lerp(meshRef.current.rotation.y, targetRotation, 0.2);
+        }
         
-        // Câmera segue o personagem
-        cameraControlsRef.current?.setLookAt(
-            meshRef.current.position.x, meshRef.current.position.y + 2, meshRef.current.position.z + 5,
-            meshRef.current.position.x, meshRef.current.position.y, meshRef.current.position.z,
-            true
-        );
+        // Câmera segue o personagem de perto e de cima (Third Person)
+        if (cameraControlsRef.current) {
+            cameraControlsRef.current.setLookAt(
+                meshRef.current.position.x, meshRef.current.position.y + 12, meshRef.current.position.z + 18,
+                meshRef.current.position.x, meshRef.current.position.y + 1, meshRef.current.position.z,
+                true
+            );
+        }
 
-import { logMovement } from '../services/analyticsService';
-
-// ... dentro do useFrame do CartoonAvatar:
         // Atualiza Store de Mundo
         const pos = meshRef.current.position.clone();
         useWorldStore.getState().setAvatarPosition(pos);
         
         // Persistência em tempo real no Firestore
-        if (user && state.frame % 60 === 0) { // A cada 60 frames (1s) para otimizar escrita
+        // @ts-ignore - frame exists on clock
+        if (user && state.clock.getElapsedTime() % 1 < 0.1) { 
             updateDoc(doc(db, 'users', user.uid), {
                 position: { x: pos.x, y: pos.y, z: pos.z },
                 lastUpdated: new Date()

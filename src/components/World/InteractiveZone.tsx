@@ -1,3 +1,4 @@
+import * as THREE from 'three';
 import React, { useEffect } from 'react';
 import { Box } from '@react-three/drei';
 import { useWorldStore } from '../../state/useWorldStore';
@@ -15,7 +16,7 @@ interface InteractiveZoneProps {
 
 export const InteractiveZone: React.FC<InteractiveZoneProps> = ({ position, targetZone, externalUrl, label, size = [8, 8, 8], color = '#80DEEA' }) => {
   const { avatarPosition, setZone } = useWorldStore();
-  const isNear = useProximity(avatarPosition, new THREE.Vector3(...position), 10);
+  const isNear = useProximity(avatarPosition || new THREE.Vector3(), new THREE.Vector3(...position), 10);
 
   useEffect(() => {
     const handleKeyPress = (e: KeyboardEvent) => {

@@ -7,69 +7,78 @@ import { Physics } from '@react-three/cannon';
 import { CityEnvironment } from './World/CityEnvironment';
 import { Swing } from './World/Swing';
 import { DigitalWhiteboard } from './World/DigitalWhiteboard';
+import { CartoonAvatar } from './CartoonAvatar';
+import { NPC } from './NPCs/NPC';
+import { npcRegistry } from './NPCs/npcRegistry';
+import { SpatialHUD } from './UI/SpatialHUD';
+import { TransitionOverlay } from './UI/TransitionOverlay';
+import { VirtualControls } from './UI/VirtualControls';
+import { CalmBubble } from './World/CalmBubble';
 
 export const MetaverseHub: React.FC = () => {
-  const store = useMemo(() => createXRStore(), []);
-  const currentZone = useWorldStore((state) => state.currentZone);
+    const store = useMemo(() => createXRStore(), []);
+    const { currentZone, emergencyMode, setEmergencyMode } = useWorldStore();
 
-  return (
-    <>
-      <TransitionOverlay />
-      <div className="absolute top-4 left-4 z-10 text-white font-bold bg-slate-900 p-2 rounded pointer-events-none">
-        Conecta-Verse v1.0 | Zona: {currentZone.toUpperCase()}
-      </div>
-      <VRButton />
-      <Canvas shadows>
-        <Physics>
-          <XR store={store}>
-            <PerspectiveCamera makeDefault position={[0, 10, 20]} />
-            <OrbitControls />
+    const handleAvatarMove = (input: { x: number; y: number }) => {
+        // Envia input para o avatar via store ou ref (implementaremos no avatar)
+        useWorldStore.getState().setAvatarInput(input);
+    };
+
+    return (
+        <div className="relative w-full h-screen overflow-hidden bg-black">
+            <TransitionOverlay />
             
-            {/* Iluminação Soft-Realism */}
-            <ambientLight intensity={0.8} />
-            <directionalLight 
-                position={[10, 15, 10]} 
-                intensity={0.5} 
-                castShadow 
-                shadow-camera-left={-50}
-                shadow-camera-right={50}
+            {/* Modo de Emergência: Overlay Darken */}
+            {emergencyMode && (
+                <div 
+                    className="absolute inset-0 z-40 bg-blue-900/40 backdrop-blur-sm flex flex-col items-center justify-center pointer-events-auto"
+                    onClick={() => setEmergencyMode(false)}
+                >
+                    <h1 className="text-white text-4xl font-bold animate-pulse mb-8">Respira fundo... 💙</h1>
+                    <button className="px-8 py-4 bg-white/20 text-white rounded-full border border-white">
+                        Sair do modo de calma
+                    </button>
+                </div>
+            )}
+
+            <VirtualControls 
+                onMove={handleAvatarMove} 
+                onAction={() => console.log("Ação pressionada!")} 
             />
-            {/* Céu suave */}
-            <Environment preset="sunset" />
 
-            {/* Cidade Aberta - Tela Inicial Digital */}
-            <CityEnvironment />
-            <Swing position={[0, 2, -15]} />
+            <Canvas shadows>
+                <Physics>
+                    <XR store={store}>
+                        {/* Mundo */}
+                        <ambientLight intensity={emergencyMode ? 0.2 : 0.8} />
+                        <directionalLight position={[10, 15, 10]} intensity={emergencyMode ? 0.1 : 0.5} castShadow />
+                        
+                        <Environment preset={emergencyMode ? "night" : "sunset"} />
+                        
+                        <CityEnvironment />
+                        
+                        {/* Protagonistas */}
+                        <CartoonAvatar userId="Theo" isLocal />
+                        <CalmBubble active={emergencyMode} />
 
-            {/* Protagonistas no Centro */}
-            <CartoonAvatar userId="Theo" isLocal />
-            
-            {/* Sofia como NPC Guia no Início */}
-            {currentZone === 'city' && (
-              <NPC 
-                definition={{ name: "Sofia", description: "Sua guia no Conecta-Verse" }} 
-                position={[2, 0, 0]} 
-                modelUrl="/models/sofia.glb" 
-              />
-            )}
+                        {currentZone === 'city' && (
+                            <NPC 
+                                definition={{ 
+                                    id: "sofia_guide", 
+                                    name: "Sofia", 
+                                    description: "Guia",
+                                    role: "Guia",
+                                    aiPrompt: "Você é a Sofia, guia do Conecta-Verse."
+                                }} 
+                                position={[2, 0, 0]} 
+                                modelUrl="/models/sofia.glb" 
+                            />
+                        )}
 
-            {/* Spatial HUD Holográfico */}
-            <SpatialHUD />
-
-            {/* Elementos em Zonas Específicas */}
-            {currentZone === 'school' && (
-              <>
-                <NPC definition={npcRegistry.clara} position={[3, 0, 0]} modelUrl="/models/clara.glb" />
-                <DigitalWhiteboard position={[0, 4, -4]} agentRole="teacher" />
-              </>
-            )}
-
-            {currentZone === 'clinic' && (
-              <NPC definition={npcRegistry.aris} position={[-20, 0, 0]} modelUrl="/models/aris.glb" />
-            )}
-          </XR>
-        </Physics>
-      </Canvas>
-    </>
-  );
+                        <SpatialHUD />
+                    </XR>
+                </Physics>
+            </Canvas>
+        </div>
+    );
 };
