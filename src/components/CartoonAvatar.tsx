@@ -5,6 +5,8 @@ import { useGLTF, Text, CameraControls } from '@react-three/drei';
 import { doc, onSnapshot, updateDoc } from 'firebase/firestore';
 import { db } from '../lib/firebase';
 import { useAuth } from '../state/AuthContext';
+import { logMovement } from '../services/analyticsService';
+import { useWorldStore } from '../state/useWorldStore';
 
 interface AvatarProps {
   userId: string;
@@ -13,8 +15,12 @@ interface AvatarProps {
 
 export const CartoonAvatar: React.FC<AvatarProps> = ({ userId, isLocal }) => {
   const meshRef = useRef<THREE.Group>(null);
-  const cameraControlsRef = useRef<any>(null); // Referência para controle de câmera
+  const cameraControlsRef = useRef<any>(null);
   const { user } = useAuth();
+  
+  const [mode, setMode] = useState<'walk' | 'skate' | 'scooter'>('walk');
+  const [color, setColor] = useState<'pink' | 'blue'>('blue');
+  // ... resto das definições
   
   // Estado para teclas
   const keys = useRef({ w: false, a: false, s: false, d: false });
@@ -70,6 +76,13 @@ import { logMovement } from '../services/analyticsService';
     <>
         <CameraControls ref={cameraControlsRef} />
         <group ref={meshRef}>
+            {/* Renderiza o item escolhido se mode !== 'walk' */}
+            {mode !== 'walk' && (
+                <mesh position={[0, -0.5, 0]}>
+                    <boxGeometry args={[0.5, 0.2, 0.5]} />
+                    <meshStandardMaterial color={color} />
+                </mesh>
+            )}
             <mesh>
                 <capsuleGeometry args={[0.5, 1.5, 4, 8]} />
                 <meshStandardMaterial color="#FF69B4" />

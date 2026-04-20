@@ -23,7 +23,12 @@ export const NPC: React.FC<NPCProps> = ({ definition, position, modelUrl }) => {
 
   return (
     <group ref={groupRef} position={position}>
-        <primitive object={scene} scale={1.5} />
+          {/* Indicador VIP ou Trial */}
+        {(userProfile.isVip || remainingTrialDays > 0) && (
+            <Text position={[0, 3, 0]} fontSize={0.5}>👑</Text>
+        )}
+      
+      <primitive object={scene} scale={1.5} />
       
       <Text position={[0, 2.2, 0]} fontSize={0.3} color="white" anchorX="center" anchorY="middle">
         {definition.name}
