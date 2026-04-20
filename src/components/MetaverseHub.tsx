@@ -7,6 +7,7 @@ import { CityEnvironment } from './World/CityEnvironment';
 import { NPC } from './NPCs/NPC';
 import { npcRegistry } from './NPCs/npcRegistry';
 import { CartoonAvatar } from './CartoonAvatar';
+import { TransitionOverlay } from './UI/TransitionOverlay';
 
 export const MetaverseHub: React.FC = () => {
   const store = useMemo(() => createXRStore(), []);
@@ -14,6 +15,7 @@ export const MetaverseHub: React.FC = () => {
 
   return (
     <>
+      <TransitionOverlay />
       <div className="absolute top-4 left-4 z-10 text-white font-bold bg-slate-900 p-2 rounded pointer-events-none">
         Conecta-Verse v1.0 | Zona: {currentZone.toUpperCase()}
       </div>

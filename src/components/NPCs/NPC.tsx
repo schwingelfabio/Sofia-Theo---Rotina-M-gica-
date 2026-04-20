@@ -1,30 +1,29 @@
-import React, { useRef } from 'react';
+import React, { useRef, useEffect } from 'react';
 import { useFrame } from '@react-three/fiber';
-import { useGLTF, Text, PresentationControls } from '@react-three/drei';
+import { useGLTF, Text, PresentationControls, useAnimations } from '@react-three/drei';
 import { NPCDefinition } from './npcRegistry';
 
 interface NPCProps {
   definition: NPCDefinition;
   position: [number, number, number];
-  modelUrl: string; // URL do asset 3D gerado/importado
+  modelUrl: string;
 }
 
 export const NPC: React.FC<NPCProps> = ({ definition, position, modelUrl }) => {
   const groupRef = useRef<THREE.Group>(null);
-  // O hook useGLTF carrega o asset do modelo 3D
-  const { scene } = useGLTF(modelUrl);
+  const { scene, animations } = useGLTF(modelUrl);
+  const { actions } = useAnimations(animations, groupRef);
 
-  useFrame((state) => {
-    if (groupRef.current) {
-        groupRef.current.position.y = Math.sin(state.clock.elapsedTime) * 0.05;
+  useEffect(() => {
+    // Tenta disparar animação padrão se disponível
+    if (actions && actions['Idle']) {
+      actions['Idle'].play();
     }
-  });
+  }, [actions]);
 
   return (
     <group ref={groupRef} position={position}>
-      <PresentationControls polar={[-Math.PI / 4, Math.PI / 4]}>
         <primitive object={scene} scale={1.5} />
-      </PresentationControls>
       
       <Text position={[0, 2.2, 0]} fontSize={0.3} color="white" anchorX="center" anchorY="middle">
         {definition.name}
